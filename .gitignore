@@ -1,0 +1,12 @@
+/node_modules
+/public/storage
+/public/hot
+/storage/*.key
+/.idea
+Homestead.json
+Homestead.yaml
+.env
+.user.ini
+.htaccess
+/public/.htaccess
+/public/.user.ini
