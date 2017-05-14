@@ -24,6 +24,6 @@ class AdminController extends Controller
         $queue = new RequestHandel($url);
         $res = $queue->request(array(),'GET',0,array('window.QRLogin.code = 200; window.QRLogin.uuid = "'=>'','";'=>''),0,'body');
 
-        var_dump($res);
+        echo $res;
     }
 }
