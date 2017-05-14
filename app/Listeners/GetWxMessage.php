@@ -5,8 +5,9 @@ namespace App\Listeners;
 use App\Events\WxMessage;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Support\Facades\Redis;
 
-class GetWxMessage
+class GetWxMessage implements ShouldQueue
 {
     /**
      * Create the event listener.
@@ -26,6 +27,9 @@ class GetWxMessage
      */
     public function handle(WxMessage $event)
     {
+        $request = $event->requesst;
+
+        Redis::sadd('ceshikey',$request);
         //
     }
 }

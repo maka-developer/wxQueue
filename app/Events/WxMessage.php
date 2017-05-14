@@ -13,15 +13,16 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 class WxMessage
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
-
+    public $request;
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct($request)
     {
         //
+        $this->request = $request;
     }
 
     /**
