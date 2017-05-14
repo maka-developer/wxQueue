@@ -32,16 +32,10 @@ class WxLoading implements ShouldQueue
     public function handle()
     {
         //
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_HEADER, 0); //设置header
-        curl_setopt($ch , CURLOPT_URL,$this->url);//设置访问的地址
-        curl_setopt($ch , CURLOPT_RETURNTRANSFER,1);//获取的信息返回
-
-        $output = curl_exec($ch);//采集
-
-        if(curl_error($ch)){
-            Redis::sadd('duilieceshikey','err:'.curl_error($ch));
+        for($i=0; $i<20; $i++)
+        {
+            Redis::sadd('wxduilieceshi',$i);
+            sleep(5);
         }
-        Redis::sadd('duilieceshikey','success:'.$output);
     }
 }

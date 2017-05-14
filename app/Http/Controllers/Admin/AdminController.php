@@ -24,12 +24,14 @@ class AdminController extends Controller
     {
         $value = $request->input('value','ddd');
         $url = 'https://login.weixin.qq.com/jslogin?appid=wx782c26e4c19acffb&redirect_uri=https%3A%2F%2Flogin.weixin.qq.com%2Fcgi-bin%2Fmmwebwx-bin%2Fwebwxnewloginpage&fun=new&lang=zh_CN&_='.$this->TurnTime;
-        $queue = new RequestHandel($url);
-        $res = $queue->request(array(),'GET',0,array('window.QRLogin.code = 200; window.QRLogin.uuid = "'=>'','";'=>''),0,'body');
-
+        // $queue = new RequestHandel($url);
+        // $res = $queue->request(array(),'GET',0,array('window.QRLogin.code = 200; window.QRLogin.uuid = "'=>'','";'=>''),0,'body');
         // event(new WxMessage($value));
+        if($value != 'ddd'){
+            dispatch(new WxLoading(''));
+        }
 
-        // $res = Redis::sMembers('ceshikey');
+        $res = Redis::sMembers('wxduilieceshi');
         var_dump($res);
     }
 
