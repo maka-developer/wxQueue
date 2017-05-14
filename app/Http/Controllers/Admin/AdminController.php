@@ -27,9 +27,9 @@ class AdminController extends Controller
         $queue = new RequestHandel($url);
         $res = $queue->request(array(),'GET',0,array('window.QRLogin.code = 200; window.QRLogin.uuid = "'=>'','";'=>''),0,'body');
 
-        event(new WxMessage($value));
+        // event(new WxMessage($value));
 
-        $res = Redis::sMembers('ceshikey');
+        // $res = Redis::sMembers('ceshikey');
         var_dump($res);
     }
 
