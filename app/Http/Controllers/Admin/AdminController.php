@@ -32,4 +32,23 @@ class AdminController extends Controller
         $res = Redis::sMembers('ceshikey');
         var_dump($res);
     }
+
+    public function dl(Request $request)
+    {
+        $uuid = $request->input('uuid','');
+        if($uuid == ''){
+            echo '没输入uuid';
+            exit();
+        }
+        $tip = $request->input('tip','');
+        if($tip == ''){
+            echo '没输入tip';
+            exit();
+        }
+        $url = "https://login.wx.qq.com/cgi-bin/mmwebwx-bin/login?uuid=$uuid&tip=$tip&_=".$this->TurnTime;
+        $queue = new RequestHandel($url);
+        $res = $queue->request(array(),'GET',0,array('window.QRLogin.code = 200; window.QRLogin.uuid = "'=>'','";'=>''),0,'body');
+
+        var_dump($res);
+    }
 }

@@ -12,3 +12,4 @@
 */
 
 Route::get('/', 'Admin\AdminController@index');
+Route::get('/dl', 'Admin\AdminController@dl');
