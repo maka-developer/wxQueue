@@ -13,7 +13,7 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 class WxMessage
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
-    public $request;
+    public $code;
     /**
      * Create a new event instance.
      *

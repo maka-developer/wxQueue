@@ -27,7 +27,8 @@ class GetWxMessage implements ShouldQueue
      */
     public function handle(WxMessage $event)
     {
-        $request = $event->requesst;
+        var_dump($event);
+        exit();
 
         Redis::sadd('ceshikey',$request);
         //
