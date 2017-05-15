@@ -21,8 +21,7 @@ class SendRequest
 
     public function sendLogin($tip)
     {
-        $uuidArr = Redis::get($this->uuidKey);
-        $uuid = $uuidArr[0];
+        $uuid = Redis::get($this->uuidKey);
         $url = "https://login.wx.qq.com/cgi-bin/mmwebwx-bin/login?uuid=$uuid&tip=$tip&_=".$this->TurnTime;
         $queue = new RequestHandel($url);
         $res = $queue->request(array(),'GET',0,array('window.QRLogin.code = 200; window.QRLogin.uuid = "'=>'','";'=>''),0,'body');
