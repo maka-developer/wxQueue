@@ -42,11 +42,21 @@ class AdminController extends Controller
     {
         $uuidKey = config('rkey.uuid.key');
         $uuid = Redis::get($uuidKey);
-        dd($uuid);
+        // dd($uuid);
 
         $testMsgKey = config('rkey.testMsg.key');
         $testMsgs = Redis::hGetAll($testMsgKey);
-        dd($testMsgs);
+        $arr['uuid'] = $uuid;
+        $arr['msg'] = $testMsgs;
+        dd($arr);
+    }
+
+    public function test(){
+        $uuidArr = Redis::get(config('rkey.uuid.key'));
+        $uuid = $uuidArr[0];
+        $tip = 1;
+        $url = "https://login.wx.qq.com/cgi-bin/mmwebwx-bin/login?uuid=$uuid&tip=$tip&_=".$this->TurnTime;
+        echo $url;
     }
 
 //    public function dl(Request $request)
