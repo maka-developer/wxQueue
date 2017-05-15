@@ -28,7 +28,7 @@ class AdminController extends Controller
         $queue = new RequestHandel($url);
         $res = $queue->request(array(),'GET',0,array('window.QRLogin.code = 200; window.QRLogin.uuid = "'=>'','";'=>''),0,'body');
         if(strpos($res,'window.QRLogin.code = 200; window.QRLogin.uuid = "')){
-             Redis::zadd(config('rkey.resMsg.key'), time(), strstr($res, 'window.QRLogin.code = 200; window.QRLogin.uuid = "'));           //存入message记录
+//             Redis::zadd(config('rkey.resMsg.key'), time(), strstr($res, 'window.QRLogin.code = 200; window.QRLogin.uuid = "'));           //存入message记录
              Redis::zadd(config('rkey.uuid.key'), time(), substr(strstr($res, 'window.QRLogin.code = 200; window.QRLogin.uuid = "'), 50, 12));
         }else{
             echo 'error::'.$res;
