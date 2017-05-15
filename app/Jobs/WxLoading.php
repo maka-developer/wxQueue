@@ -5,6 +5,7 @@
 namespace App\Jobs;
 
 use App\Libs\RequestHandel;
+use App\Libs\SendRequest;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
@@ -41,27 +42,7 @@ class WxLoading implements ShouldQueue
     public function handle()
     {
         //首先获取uuid  和tip（是否扫码1 未扫描 0已扫描)
-        $uuidArr = Redis::get($this->uuidKey);
-        $uuid = $uuidArr[0];
-        $tip = $this->tip;
-        //调用接口
-        $url = "https://login.wx.qq.com/cgi-bin/mmwebwx-bin/login?uuid=$uuid&tip=$tip&_=".$this->TurnTime;
-        $queue = new RequestHandel($url);
-        $res = $queue->request(array(),'GET',0,array('window.QRLogin.code = 200; window.QRLogin.uuid = "'=>'','";'=>''),0,'body');
-        if(!$res){              //无操作
-            Redis::hset($this->testMsgKey, '等待.....', date('Y-m-d H:i:s'));
-            dispatch(new WxLoading('1'));
-            exit();
-        }
-        if(strpos($res, 'window.code=201;')){        //通过扫码
-            Redis::hset($this->testMsgKey, $res, date('Y-m-d H:i:s'));
-            sleep(8);
-            dispatch(new WxLoading('0'));
-            exit();
-        }
-        if(strpos($res, 'window.code=200;')){
-            Redis::hset($this->testMsgKey, $res, date('Y-m-d H:i:s'));
-            exit();
-        }
+        $sendRequest = new SendRequest();
+        $sendRequest->sendLogin(1);
     }
 }
