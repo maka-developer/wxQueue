@@ -1,5 +1,7 @@
 <?php
-
+/*
+ * 登录监听类，队列执行
+ */
 namespace App\Jobs;
 
 use Illuminate\Bus\Queueable;
@@ -12,16 +14,14 @@ use Illuminate\Support\Facades\Redis;
 class WxLoading implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
-    public $url;
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct($url)
+    public function __construct()
     {
         //
-        $this->url = $url;
     }
 
     /**
@@ -32,10 +32,5 @@ class WxLoading implements ShouldQueue
     public function handle()
     {
         //
-        for($i=0; $i<20; $i++)
-        {
-            Redis::sadd('wxduilieceshi',$i);
-            sleep(5);
-        }
     }
 }
