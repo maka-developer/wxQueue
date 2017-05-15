@@ -38,22 +38,33 @@ class AdminController extends Controller
          dispatch(new WxLoading('1'));
     }
 
-    public function dl(Request $request)
+    public function dl()
     {
-        $uuid = $request->input('uuid','');
-        if($uuid == ''){
-            echo '没输入uuid';
-            exit();
-        }
-        $tip = $request->input('tip','');
-        if($tip == ''){
-            echo '没输入tip';
-            exit();
-        }
-        $url = "https://login.wx.qq.com/cgi-bin/mmwebwx-bin/login?uuid=$uuid&tip=$tip&_=".$this->TurnTime;
-        $queue = new RequestHandel($url);
-        $res = $queue->request(array(),'GET',0,array('window.QRLogin.code = 200; window.QRLogin.uuid = "'=>'','";'=>''),0,'body');
+        $uuidKey = config('rkey.uuid.key');
+        $uuid = Redis::get($uuidKey);
+        dd($uuid);
 
-        var_dump($res);
+        $testMsgKey = config('rkey.testMsg.key');
+        $testMsgs = Redis::hGetAll($testMsgKey);
+        dd($testMsgs);
     }
+
+//    public function dl(Request $request)
+//    {
+//        $uuid = $request->input('uuid','');
+//        if($uuid == ''){
+//            echo '没输入uuid';
+//            exit();
+//        }
+//        $tip = $request->input('tip','');
+//        if($tip == ''){
+//            echo '没输入tip';
+//            exit();
+//        }
+//        $url = "https://login.wx.qq.com/cgi-bin/mmwebwx-bin/login?uuid=$uuid&tip=$tip&_=".$this->TurnTime;
+//        $queue = new RequestHandel($url);
+//        $res = $queue->request(array(),'GET',0,array('window.QRLogin.code = 200; window.QRLogin.uuid = "'=>'','";'=>''),0,'body');
+//
+//        var_dump($res);
+//    }
 }
