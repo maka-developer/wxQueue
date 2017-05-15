@@ -41,7 +41,7 @@ class WxLoading implements ShouldQueue
     public function handle()
     {
         //首先获取uuid  和tip（是否扫码1 未扫描 0已扫描)
-        $uuidArr = Redis::zRevRange($this->uuidKey, 0, -1);
+        $uuidArr = Redis::get($this->uuidKey);
         $uuid = $uuidArr[0];
         $tip = $this->tip;
         //调用接口
