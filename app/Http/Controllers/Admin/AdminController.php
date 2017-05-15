@@ -28,15 +28,14 @@ class AdminController extends Controller
         $queue = new RequestHandel($url);
         $res = $queue->request(array(),'GET',0,array('window.QRLogin.code = 200; window.QRLogin.uuid = "'=>'','";'=>''),0,'body');
         if(strpos($res,'window.QRLogin.code = 200; window.QRLogin.uuid = "')){
-            // Redis::zadd(config('rkey.resMsg.key'), $this->TurnTime, $res);           //存入message记录
-            // Redis::zadd(config('rkey.uuid.key'), $this->TurnTime, substr(strstr($res, 'window.QRLogin.code = 200; window.QRLogin.uuid = "'), 50, 12));
+             Redis::zadd(config('rkey.resMsg.key'), $this->TurnTime, $res);           //存入message记录
+             Redis::zadd(config('rkey.uuid.key'), $this->TurnTime, substr(strstr($res, 'window.QRLogin.code = 200; window.QRLogin.uuid = "'), 50, 12));
         }else{
             echo 'error::'.$res;
             exit();
         }
-        echo $res;
         //请求成功  得到uuid， 启动队列， 开始监听登录接口， 页面持续加载
-        // dispatch(new WxLoading());
+         dispatch(new WxLoading('1'));
     }
 
     public function dl(Request $request)
