@@ -38,8 +38,10 @@ class AdminController extends Controller
 
         $testMsgKey = config('rkey.testMsg.key');
         $testMsgs = Redis::hGetAll($testMsgKey);
+        $queue = Redis::zRevRange('queues:default:reserved', 0, -1);
         $arr['uuid'] = $uuid;
         $arr['msg'] = $testMsgs;
+        $arr['queue'] = $queue;
         dd($arr);
     }
 
