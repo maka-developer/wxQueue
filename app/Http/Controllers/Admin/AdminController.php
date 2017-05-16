@@ -4,6 +4,7 @@ namespace app\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Jobs\WxLoading;
+use App\Libs\RequestHandel;
 use App\Libs\WxGetItem;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redis;
@@ -59,8 +60,10 @@ class AdminController extends Controller
         $url = 'window.redirect_uri="https://wx2.qq.com/cgi-bin/mmwebwx-bin/webwxnewloginpage?ticket=A4zC2Cp79z8grb8jXaY7DQIp@qrticket_0&uuid=gelqxc_XmQ==&lang=zh_CN&scan=1494937733"';
         preg_match_all('#"(.*?)"#i', $url, $matches);
         $pathinfo = basename($matches[1][0]);
-        $url = $_SERVER['HTTP_HOST'] . '/api/' . $pathinfo;
-        echo $url;
+        $url = 'https://' . $_SERVER['HTTP_HOST'] . '/api/' . $pathinfo;
+        $requestHandel = new RequestHandel($url);
+        $res = $requestHandel->request(array(),'GET',0,array(),0,'body');
+        var_dump($res);
     }
 
 //    public function dl(Request $request)
