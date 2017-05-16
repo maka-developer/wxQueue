@@ -48,37 +48,33 @@ class SendRequest
             $errArr['code'] = $code;
             $errArr['position'] = 'class:SendRequest=>fun:sendLogin';
             Redis::hset(config('rkey.errorMsg.key'),date('Y-m-d H:i:s'),json_encode($errArr));
-            return true;
-        }
-
-        $url = "https://login.wx.qq.com/cgi-bin/mmwebwx-bin/login?uuid=$uuid&tip=$tip&_=".$this->TurnTime;
-        $queue = new RequestHandel($url);
-        $res = $queue->request(array(),'GET',0,array('window.QRLogin.code = 200; window.QRLogin.uuid = "'=>'','";'=>''),0,'body');
-        if(!$res){              //无操作
-            Redis::hset($this->testMsgKey, date('Y-m-d H:i:s'), '等待.....');
-            $uuidArr['code'] = 0;
-            Redis::set($this->uuidKey,json_encode($uuidArr));
-            exit();
-        }else if(strpos($res, 'window.code=201;')){        //通过扫码
-            Redis::hset($this->testMsgKey, date('Y-m-d H:i:s'), $res);
-            $uuidArr['code'] = 201;
-            Redis::set($this->uuidKey,json_encode($uuidArr));
-            sleep(3);
-            exit();
-        }else if(strpos($res, 'window.code=200;')){         //登录
-            Redis::hset($this->testMsgKey, date('Y-m-d H:i:s'), $res);
-            $uuidArr['code'] = 200;
-            Redis::set($this->uuidKey,json_encode($uuidArr));
-            return true;
-        }else if(strpos($res, 'window.code=400;') || strpos($res, 'window.code=408;')){     //过期
-            Redis::hset($this->testMsgKey, date('Y-m-d H:i:s'), $res);
-            $uuidArr['code'] = 400;
-            Redis::set($this->uuidKey,json_encode($uuidArr));
-            exit();
-        }else{
-            Redis::hset($this->testMsgKey, date('Y-m-d H:i:s'), $res);
-            return true;
+        }else {
+            $url = "https://login.wx.qq.com/cgi-bin/mmwebwx-bin/login?uuid=$uuid&tip=$tip&_=" . $this->TurnTime;
+            $queue = new RequestHandel($url);
+            $res = $queue->request(array(), 'GET', 0, array('window.QRLogin.code = 200; window.QRLogin.uuid = "' => '', '";' => ''), 0, 'body');
+            if (!$res) {              //无操作
+                Redis::hset($this->testMsgKey, date('Y-m-d H:i:s'), '等待.....');
+                $uuidArr['code'] = 0;
+                Redis::set($this->uuidKey, json_encode($uuidArr));
+                exit();
+            } else if (strpos($res, 'window.code=201;')) {        //通过扫码
+                Redis::hset($this->testMsgKey, date('Y-m-d H:i:s'), $res);
+                $uuidArr['code'] = 201;
+                Redis::set($this->uuidKey, json_encode($uuidArr));
+                sleep(3);
+                exit();
+            } else if (strpos($res, 'window.code=200;')) {         //登录
+                Redis::hset($this->testMsgKey, date('Y-m-d H:i:s'), $res);
+                $uuidArr['code'] = 200;
+                Redis::set($this->uuidKey, json_encode($uuidArr));
+            } else if (strpos($res, 'window.code=400;') || strpos($res, 'window.code=408;')) {     //过期
+                Redis::hset($this->testMsgKey, date('Y-m-d H:i:s'), $res);
+                $uuidArr['code'] = 400;
+                Redis::set($this->uuidKey, json_encode($uuidArr));
+                exit();
+            } else {
+                Redis::hset($this->testMsgKey, date('Y-m-d H:i:s'), $res);
+            }
         }
     }
-
 }
