@@ -16,21 +16,21 @@ class SendRequest
     {
         $this->TurnTime = time().'000';
     }
-
-    public function sendLogin()
+    /*
+     *  等待用户扫码登录
+     *  code 0 ~ 3
+     */
+    public function sendLogin($code)
     {
         $uuid = Redis::get(config('rkey.uuid.key'));     //获取uuid
-        $code = Redis::get(config('rkey.code.key'));     //获取uuid
         $tip = 1;                                          //默认tip为1 未扫码
         switch($code)
         {
             case 0:
-                $tip = 1;
-                break;
-            case 1001:
-                $tip = 1;
-                break;
             case 1:
+                $tip = 1;
+                break;
+            case 2:
                 $tip = 0;
                 break;
             default :
@@ -52,23 +52,31 @@ class SendRequest
                 exit();
             } else if (strpos($res, 'window.code=201;')) {        //通过扫码
                 Redis::hset(config('rkey.testMsg.key'), date('Y-m-d H:i:s'), $res);
-                Redis::set(config('rkey.code.key'), 1);
+                Redis::set(config('rkey.code.key'), 2);
                 sleep(3);
                 exit();
             } else if (strpos($res, 'window.code=200;')) {         //登录
                 Redis::hset(config('rkey.testMsg.key'), date('Y-m-d H:i:s'), $res);
-                Redis::set(config('rkey.code.key'), 2);
+                Redis::set(config('rkey.code.key'), 3);
             } else if (strpos($res, 'window.code=400;') || strpos($res, 'window.code=408;')) {     //过期
                 WxGetItem::getUuid();       //重新生成uuid
                 Redis::hset(config('rkey.testMsg.key'), date('Y-m-d H:i:s'), $res);
                 $errArr['url'] = $url;
                 $errArr['code'] = $code;
                 Redis::hset(config('rkey.errorMsg.key'),date('Y-m-d H:i:s'),json_encode($errArr));
-                Redis::set(config('rkey.code.key'), 1001);
+                Redis::set(config('rkey.code.key'), 1);
                 exit();
             } else {
                 Redis::hset(config('rkey.testMsg.key'), date('Y-m-d H:i:s'), 'else::'.$res);
             }
         }
+    }
+
+    /*
+     *  loginPage 获取用户相关数据
+     */
+    public function loginPage($code)
+    {
+
     }
 }
