@@ -48,8 +48,7 @@ class SendRequest
             $res = $queue->request(array(), 'GET', 0, array('window.QRLogin.code = 200; window.QRLogin.uuid = "' => '', '";' => ''), 0, 'body');
             if (!$res) {              //无操作
                 Redis::hset(config('rkey.testMsg.key'), date('Y-m-d H:i:s'), '等待.....');
-                $uuidArr['code'] = 0;
-                Redis::set(config('rkey.testMsg.key'), json_encode($uuidArr));
+                Redis::set(config('rkey.code.key'), 0);
                 exit();
             } else if (strpos($res, 'window.code=201;')) {        //通过扫码
                 Redis::hset(config('rkey.testMsg.key'), date('Y-m-d H:i:s'), $res);
