@@ -43,7 +43,7 @@ class SendRequest
         }else {
             $url = "https://login.wx.qq.com/cgi-bin/mmwebwx-bin/login?uuid=$uuid&tip=$tip&_=" . $this->TurnTime;
             $queue = new RequestHandel($url);
-            $res = $queue->request(array(), 'GET', 0, array('window.QRLogin.code = 200; window.QRLogin.uuid = "' => '', '";' => ''), 0, 'body');
+            $res = $queue->request(array(), 'GET', 0, 0, 'body');
             if (!$res) {              //无操作
                 Redis::hset(config('rkey.testMsg.key'), date('Y-m-d H:i:s'), '等待.....');
                 Redis::set(config('rkey.code.key'), 0);

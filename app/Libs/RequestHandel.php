@@ -14,7 +14,7 @@ class RequestHandel
     }
 
     //
-    public function request($array=array(),$request='GET',$cookie='',$filter=array(),$json=0,$data='all')
+    public function request($array=array(),$request='GET',$cookie='',$json=0,$data='all')
     {
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $this->url);
@@ -36,9 +36,6 @@ class RequestHandel
                 $string = explode(' Domain=',$value);
                 $cookie = $cookie.$string[0];
             }
-        }
-        if(!empty($filter)){
-            $body = strtr($body,$filter);
         }
         if($json==1){
             $body = json_decode($body,true);

@@ -62,7 +62,7 @@ class AdminController extends Controller
         $pathinfo = basename($matches[1][0]);
         $url = 'https://' . $_SERVER['HTTP_HOST'] . '/api/' . $pathinfo;
         $requestHandel = new RequestHandel($url);
-        $res = $requestHandel->request(array(),'GET',0,array(),0,'body');
+        $res = $requestHandel->request(array(),'GET',0,0,'body');
         var_dump($res);
     }
 
