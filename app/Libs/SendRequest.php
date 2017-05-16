@@ -9,8 +9,6 @@ use Illuminate\Support\Facades\Redis;
 class SendRequest
 {
     private $TurnTime;
-    private $testMsgKey;
-    private $uuidKey;
 
     public function __construct()
     {
