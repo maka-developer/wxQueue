@@ -47,10 +47,10 @@ class AdminController extends Controller
     }
 
     public function test(){
-        $uuid = Redis::get(config('rkey.uuid.key'));
-        $tip = 1;
-        $url = "https://login.wx.qq.com/cgi-bin/mmwebwx-bin/login?uuid=$uuid&tip=$tip&_=".$this->TurnTime;
-        echo $url;
+        $url = 'window.redirect_uri="https://wx2.qq.com/cgi-bin/mmwebwx-bin/webwxnewloginpage?ticket=A4zC2Cp79z8grb8jXaY7DQIp@qrticket_0&uuid=gelqxc_XmQ==&lang=zh_CN&scan=1494937733"';
+        preg_match_all('#"(.*?)"#i', $url, $matches); 
+        var_dump($matches);
+        $pathinfo = pathinfo($matches[1][0]);
     }
 
 //    public function dl(Request $request)
