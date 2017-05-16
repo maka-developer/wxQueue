@@ -37,11 +37,13 @@ class AdminController extends Controller
         $testMsgs = Redis::hGetAll(config('rkey.testMsg.key'));
         $errMsgs = Redis::hGetAll(config('rkey.errorMsg.key'));
         $queue = Redis::zRevRange('queues:default:reserved', 0, -1);
+        $uuids = Redis::hGetAll('wx::uuids');
 
         $arr['url'] = 'https://login.weixin.qq.com/qrcode/'.$uuid;
         $arr['msg'] = $testMsgs;
         $arr['queue'] = $queue;
         $arr['err'] = $errMsgs;
+        $arr['uuids'] = $uuids;
         dd($arr);
     }
 

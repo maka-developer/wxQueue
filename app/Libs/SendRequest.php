@@ -33,7 +33,6 @@ class SendRequest
                 $tip = 1;
                 break;
             case 400:
-                $uuid = WxGetItem::getUuid();
                 $tip = 1;
                 break;
             case 201:
@@ -68,7 +67,11 @@ class SendRequest
                 $uuidArr['code'] = 200;
                 Redis::set($this->uuidKey, json_encode($uuidArr));
             } else if (strpos($res, 'window.code=400;') || strpos($res, 'window.code=408;')) {     //过期
+                WxGetItem::getUuid();       //重新生成uuid
                 Redis::hset($this->testMsgKey, date('Y-m-d H:i:s'), $res);
+                $errArr['url'] = $url;
+                $errArr['code'] = $code;
+                Redis::hset(config('rkey.errorMsg.key'),date('Y-m-d H:i:s'),json_encode($errArr));
                 $uuidArr['code'] = 400;
                 Redis::set($this->uuidKey, json_encode($uuidArr));
                 exit();

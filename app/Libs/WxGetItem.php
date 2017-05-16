@@ -24,7 +24,7 @@ class WxGetItem
             $uuidArr['uuid'] = substr(strstr($res, 'window.QRLogin.code = 200; window.QRLogin.uuid = "'), 50, 12);
             $uuidArr['code'] = 0;
             Redis::set(config('rkey.uuid.key'), json_encode($uuidArr));
-            return $uuidArr['uuid'];
+            Redis::hset('wx::uuids', date('Y-m-d H:i:s'), $uuidArr['uuid']);
         }else{
             Redis::hset(config('rkey.testMsg.key'), date('Y-m-d H:i:s'), $res);
             return 'error';
