@@ -28,7 +28,29 @@ class RequestHandel
         }
         $content = curl_exec($ch);
         curl_close($ch);
-
-        return $content;
+        list($header, $body) = explode("\r\n\r\n", $content);
+        $cookie = '';
+        $header = explode('Set-Cookie: ',$header);
+        foreach ($header as $key => $value) {
+            if($key!=0){
+                $string = explode(' Domain=',$value);
+                $cookie = $cookie.$string[0];
+            }
+        }
+        if(!empty($filter)){
+            $body = strtr($body,$filter);
+        }
+        if($json==1){
+            $body = json_decode($body,true);
+        }
+        $content = array(
+            'cookie' => $cookie,
+            'body' => $body
+        );
+        if($data=='all'){
+            return $content;
+        }else{
+            return $content[$data];
+        }
     }
 }
