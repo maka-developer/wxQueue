@@ -48,7 +48,7 @@ class SendRequest
             $errArr['code'] = $code;
             $errArr['position'] = 'class:SendRequest=>fun:sendLogin';
             Redis::hset(config('rkey.errorMsg.key'),date('Y-m-d H:i:s'),json_encode($errArr));
-            exit();
+            return true;
         }
 
         $url = "https://login.wx.qq.com/cgi-bin/mmwebwx-bin/login?uuid=$uuid&tip=$tip&_=".$this->TurnTime;
@@ -58,26 +58,26 @@ class SendRequest
             Redis::hset($this->testMsgKey, date('Y-m-d H:i:s'), '等待.....');
             $uuidArr['code'] = 0;
             Redis::set($this->uuidKey,json_encode($uuidArr));
-            throw new Exception("等待.......");
+            exit();
         }else if(strpos($res, 'window.code=201;')){        //通过扫码
             Redis::hset($this->testMsgKey, date('Y-m-d H:i:s'), $res);
             $uuidArr['code'] = 201;
             Redis::set($this->uuidKey,json_encode($uuidArr));
             sleep(3);
-            throw new Exception("等待扫码.......");
+            exit();
         }else if(strpos($res, 'window.code=200;')){         //登录
             Redis::hset($this->testMsgKey, date('Y-m-d H:i:s'), $res);
             $uuidArr['code'] = 200;
             Redis::set($this->uuidKey,json_encode($uuidArr));
-            exit();
+            return true;
         }else if(strpos($res, 'window.code=400;') || strpos($res, 'window.code=408;')){     //过期
             Redis::hset($this->testMsgKey, date('Y-m-d H:i:s'), $res);
             $uuidArr['code'] = 400;
             Redis::set($this->uuidKey,json_encode($uuidArr));
-            throw new Exception("链接过期.......");
+            exit();
         }else{
             Redis::hset($this->testMsgKey, date('Y-m-d H:i:s'), $res);
-            exit();
+            return true;
         }
     }
 
