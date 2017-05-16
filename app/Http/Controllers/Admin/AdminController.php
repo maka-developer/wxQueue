@@ -5,6 +5,7 @@ namespace app\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Jobs\WxLoading;
 use App\Libs\RequestHandel;
+use App\Libs\SendRequest;
 use App\Libs\WxGetItem;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redis;
@@ -27,7 +28,11 @@ class AdminController extends Controller
 
         WxGetItem::getUuid();
         //请求成功  得到uuid， 启动队列， 开始监听登录接口， 页面持续加载
-        dispatch(new WxLoading());
+//        dispatch(new WxLoading());
+
+        $code = Redis::get(config('rkey.code.key'));     //获取uuid
+        $sendRequest = new SendRequest();
+        $sendRequest->sendLogin($code);
     }
 
     public function webwxnewloginpage(Request $request)
