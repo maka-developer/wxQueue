@@ -27,6 +27,5 @@ class WxGetItem
         }else{
             Redis::hset(config('rkey.testMsg.key'), date('Y-m-d H:i:s'), $res);
         }
-        return $res;
     }
 }
