@@ -48,15 +48,15 @@ class SendRequest
                 Redis::hset(config('rkey.testMsg.key'), date('Y-m-d H:i:s'), '等待.....');
                 Redis::set(config('rkey.code.key'), 0);
                 exit();
-            } else if (strpos($res, 'window.code=201;')) {        //通过扫码
+            } else if ($res == 'window.code=201;') {        //通过扫码
                 Redis::hset(config('rkey.testMsg.key'), date('Y-m-d H:i:s'), $res);
                 Redis::set(config('rkey.code.key'), 2);
                 sleep(3);
                 exit();
-            } else if (strpos($res, 'window.code=200;')) {         //登录
+            } else if ($res == 'window.code=200;') {         //登录
                 Redis::hset(config('rkey.testMsg.key'), date('Y-m-d H:i:s'), $res);
                 Redis::set(config('rkey.code.key'), 3);
-            } else if (strpos($res, 'window.code=400;') || strpos($res, 'window.code=408;')) {     //过期
+            } else if ($res == 'window.code=400;' || $res == 'window.code=408;') {     //过期
                 WxGetItem::getUuid();       //重新生成uuid
                 Redis::hset(config('rkey.testMsg.key'), date('Y-m-d H:i:s'), $res);
                 $errArr['url'] = $url;
