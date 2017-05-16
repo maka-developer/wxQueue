@@ -21,10 +21,13 @@ class WxGetItem
         $queue = new RequestHandel($url);
         $res = $queue->request(array(),'GET',0,array('window.QRLogin.code = 200; window.QRLogin.uuid = "'=>'','";'=>''),0,'body');
         if(strpos($res,'window.QRLogin.code = 200; window.QRLogin.uuid = "')){
-//             Redis::zadd(config('rkey.resMsg.key'), time(), strstr($res, 'window.QRLogin.code = 200; window.QRLogin.uuid = "'));           //存入message记录
-            Redis::set(config('rkey.uuid.key'), substr(strstr($res, 'window.QRLogin.code = 200; window.QRLogin.uuid = "'), 50, 12));
+            $uuidArr['uuid'] = substr(strstr($res, 'window.QRLogin.code = 200; window.QRLogin.uuid = "'), 50, 12);
+            $uuidArr['code'] = 0;
+            Redis::set(config('rkey.uuid.key'), json_encode($uuidArr));
+            return $uuidArr['uuid'];
         }else{
             Redis::hset(config('rkey.testMsg.key'), date('Y-m-d H:i:s'), $res);
+            return 'error';
         }
     }
 }

@@ -7,20 +7,22 @@
 return [
     /*
      *  形式
-     *      key=>{
-     *              'uuid' : date('YmdHis');
-     *           }
+     *      key=>json(array(uuid=>code))
+     *  code:0=>默认
+     *       201=>用户扫码完成
+     *       200=>用户登录完成
+     *       400/408=>链接失效
      */
     'uuid'=>[
         'key'=>'wx::uuid',
-        'type'=>'有序集合',
-        'ins'=>'保存wxuuid的redis，最多保存10条uuid'
+        'type'=>'string',
+        'ins'=>''
     ],
 
     /*
      *   形式
      *      key=>{
-     *              'msg'  : data('YmdHis');
+     *              data('YmdHis');
      *          }
      */
     'resMsg'=>[
@@ -32,12 +34,22 @@ return [
     /*
      *    形式
      *      key=>{
-     *              'msg'   :  data('Y-m-d H:i:s');
+     *             data('Y-m-d H:i:s')=>msg;
      *          }
      */
     'testMsg'=>[
         'key'=>'wx::testMsg',
         'type'=>'散列',
         'ins'=>'测试用数据保存'
+    ],
+
+    /*
+     *
+     *
+     */
+    'errorMsg'=>[
+        'key'=>'wx::errorMsg',
+        'type'=>'散列',
+        'ins'=>'保存错误信息'
     ]
 ];

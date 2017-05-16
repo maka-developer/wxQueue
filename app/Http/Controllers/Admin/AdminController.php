@@ -33,15 +33,15 @@ class AdminController extends Controller
     public function dl()
     {
         $uuidKey = config('rkey.uuid.key');
-        $uuid = Redis::get($uuidKey);
-        // dd($uuid);
-
-        $testMsgKey = config('rkey.testMsg.key');
-        $testMsgs = Redis::hGetAll($testMsgKey);
+        $uuid = Redis::get($uuidKey);       //uuid;
+        $testMsgs = Redis::hGetAll(config('rkey.testMsg.key'));
+        $errMsgs = Redis::hGetAll(config('rkey.errorMsg.key'));
         $queue = Redis::zRevRange('queues:default:reserved', 0, -1);
+
         $arr['uuid'] = $uuid;
         $arr['msg'] = $testMsgs;
         $arr['queue'] = $queue;
+        $arr['err'] = $errMsgs;
         dd($arr);
     }
 

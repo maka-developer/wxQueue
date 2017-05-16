@@ -11,8 +11,6 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
-use Illuminate\Support\Facades\Redis;
-
 class WxLoading implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
@@ -43,6 +41,6 @@ class WxLoading implements ShouldQueue
     {
         //首先获取uuid  和tip（是否扫码1 未扫描 0已扫描)
         $sendRequest = new SendRequest();
-        $sendRequest->sendLogin(1);
+        $sendRequest->sendLogin();
     }
 }
