@@ -9,7 +9,6 @@ use Illuminate\Support\Facades\Redis;
 class SendRequest
 {
     private $TurnTime;
-    private $ceshi;
 
     public function __construct()
     {
