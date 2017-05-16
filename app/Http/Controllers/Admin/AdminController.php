@@ -47,7 +47,7 @@ class AdminController extends Controller
     public function test(){
         $url = 'window.redirect_uri="https://wx2.qq.com/cgi-bin/mmwebwx-bin/webwxnewloginpage?ticket=A4zC2Cp79z8grb8jXaY7DQIp@qrticket_0&uuid=gelqxc_XmQ==&lang=zh_CN&scan=1494937733"';
         preg_match_all('#"(.*?)"#i', $url, $matches);
-        $pathinfo = pathinfo($matches[1][0]);
+        $pathinfo = basename($matches[1][0]);
         var_dump($pathinfo);
     }
 
