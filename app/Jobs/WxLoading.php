@@ -4,7 +4,6 @@
  */
 namespace App\Jobs;
 
-use App\Libs\RequestHandel;
 use App\Libs\SendRequest;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
@@ -14,22 +13,14 @@ use Illuminate\Foundation\Bus\Dispatchable;
 class WxLoading implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
-    private $uuidKey;
-    private $tip;
-    private $TurnTime;
-    private $testMsgKey;
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct($tip)
+    public function __construct()
     {
-        // redis-key赋值
-        $this->uuidKey = config('rkey.uuid.key');
-        $this->tip = $tip;
-        $this->TurnTime = time() . '000';
-        $this->testMsgKey = config('rkey.testMsg.key');
+        //
     }
 
     /**

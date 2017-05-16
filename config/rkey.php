@@ -8,15 +8,25 @@ return [
     /*
      *  形式
      *      key=>json(array(uuid=>code))
-     *  code:0=>默认
-     *       201=>用户扫码完成
-     *       200=>用户登录完成
-     *       400/408=>链接失效
      */
     'uuid'=>[
         'key'=>'wx::uuid',
         'type'=>'string',
         'ins'=>''
+    ],
+
+    /*
+     *  形式，同uuid
+     *  0   =>  获取uuid
+     *  1   =>  用户扫码
+     *  2   =>  用户登录
+     *
+     *  1001=>  登录监听接口超时
+     */
+    'code'=>[
+        'key'=>'wx::code',
+        'type'=>'string',
+        'ins'=>'全局code动态'
     ],
 
     /*

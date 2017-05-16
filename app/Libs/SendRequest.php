@@ -5,7 +5,6 @@
 namespace App\Libs;
 
 use Illuminate\Support\Facades\Redis;
-use League\Flysystem\Exception;
 
 class SendRequest
 {
@@ -16,26 +15,22 @@ class SendRequest
     public function __construct()
     {
         $this->TurnTime = time().'000';
-        $this->testMsgKey = config('rkey.testMsg.key');
-        $this->uuidKey = config('rkey.uuid.key');
     }
 
     public function sendLogin()
     {
-        $uuidArr = Redis::get($this->uuidKey);
-        $uuidArr = json_decode($uuidArr,true);
-        $uuid = $uuidArr['uuid'];               //获取uuid
-        $code = $uuidArr['code'];               //获取状态码
-        $tip = 1;                               //默认tip为1 未扫码
+        $uuid = Redis::get(config('rkey.uuid.key'));     //获取uuid
+        $code = Redis::get(config('rkey.code.key'));     //获取uuid
+        $tip = 1;                                          //默认tip为1 未扫码
         switch($code)
         {
             case 0:
                 $tip = 1;
                 break;
-            case 400:
+            case 1001:
                 $tip = 1;
                 break;
-            case 201:
+            case 1:
                 $tip = 0;
                 break;
             default :
@@ -52,31 +47,28 @@ class SendRequest
             $queue = new RequestHandel($url);
             $res = $queue->request(array(), 'GET', 0, array('window.QRLogin.code = 200; window.QRLogin.uuid = "' => '', '";' => ''), 0, 'body');
             if (!$res) {              //无操作
-                Redis::hset($this->testMsgKey, date('Y-m-d H:i:s'), '等待.....');
+                Redis::hset(config('rkey.testMsg.key'), date('Y-m-d H:i:s'), '等待.....');
                 $uuidArr['code'] = 0;
-                Redis::set($this->uuidKey, json_encode($uuidArr));
+                Redis::set(config('rkey.testMsg.key'), json_encode($uuidArr));
                 exit();
             } else if (strpos($res, 'window.code=201;')) {        //通过扫码
-                Redis::hset($this->testMsgKey, date('Y-m-d H:i:s'), $res);
-                $uuidArr['code'] = 201;
-                Redis::set($this->uuidKey, json_encode($uuidArr));
+                Redis::hset(config('rkey.testMsg.key'), date('Y-m-d H:i:s'), $res);
+                Redis::set(config('rkey.code.key'), 1);
                 sleep(3);
                 exit();
             } else if (strpos($res, 'window.code=200;')) {         //登录
-                Redis::hset($this->testMsgKey, date('Y-m-d H:i:s'), $res);
-                $uuidArr['code'] = 200;
-                Redis::set($this->uuidKey, json_encode($uuidArr));
+                Redis::hset(config('rkey.testMsg.key'), date('Y-m-d H:i:s'), $res);
+                Redis::set(config('rkey.code.key'), 2);
             } else if (strpos($res, 'window.code=400;') || strpos($res, 'window.code=408;')) {     //过期
                 WxGetItem::getUuid();       //重新生成uuid
-                Redis::hset($this->testMsgKey, date('Y-m-d H:i:s'), $res);
+                Redis::hset(config('rkey.testMsg.key'), date('Y-m-d H:i:s'), $res);
                 $errArr['url'] = $url;
                 $errArr['code'] = $code;
                 Redis::hset(config('rkey.errorMsg.key'),date('Y-m-d H:i:s'),json_encode($errArr));
-                $uuidArr['code'] = 400;
-                Redis::set($this->uuidKey, json_encode($uuidArr));
+                Redis::set(config('rkey.code.key'), 1001);
                 exit();
             } else {
-                Redis::hset($this->testMsgKey, date('Y-m-d H:i:s'), $res);
+                Redis::hset(config('rkey.testMsg.key'), date('Y-m-d H:i:s'), 'else::'.$res);
             }
         }
     }
