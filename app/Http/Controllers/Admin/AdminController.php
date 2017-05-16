@@ -5,6 +5,7 @@ namespace app\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Jobs\WxLoading;
 use App\Libs\WxGetItem;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redis;
 
 class AdminController extends Controller
@@ -28,6 +29,16 @@ class AdminController extends Controller
         dispatch(new WxLoading());
     }
 
+    public function webwxnewloginpage(Request $request)
+    {
+        $res['ticket'] = $request->input('ticket','');
+        $res['uuid'] = $request->input('uuid','');
+        $res['lang'] = $request->input('lang','');
+        $res['scan'] = $request->input('scan','');
+
+        return response()->json($res);
+    }
+
     public function dl()
     {
         $uuid = Redis::get(config('rkey.uuid.key'));       //uuid;
@@ -48,7 +59,8 @@ class AdminController extends Controller
         $url = 'window.redirect_uri="https://wx2.qq.com/cgi-bin/mmwebwx-bin/webwxnewloginpage?ticket=A4zC2Cp79z8grb8jXaY7DQIp@qrticket_0&uuid=gelqxc_XmQ==&lang=zh_CN&scan=1494937733"';
         preg_match_all('#"(.*?)"#i', $url, $matches);
         $pathinfo = basename($matches[1][0]);
-        var_dump($pathinfo);
+        $url = $_SERVER['HTTP_HOST'] . '/api/' . $pathinfo;
+        echo $url;
     }
 
 //    public function dl(Request $request)
