@@ -25,9 +25,10 @@ class AdminController extends Controller
     public function index()
     {
 
-        WxGetItem::getUuid();
+        $res = WxGetItem::getUuid();
         //请求成功  得到uuid， 启动队列， 开始监听登录接口， 页面持续加载
 //        dispatch(new WxLoading());
+        var_dump($res);
     }
 
     public function webwxnewloginpage(Request $request)
