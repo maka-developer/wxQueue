@@ -32,11 +32,14 @@ class SendRequest
             Redis::hset($this->testMsgKey, date('Y-m-d H:i:s'), $res);
             sleep(8);
             $this->sendLogin(0);
-        }else if(strpos($res, 'window.code=200;')){
+        }else if(strpos($res, 'window.code=200;')){         //选择登录
             Redis::hset($this->testMsgKey, date('Y-m-d H:i:s'), $res);
             exit();
-        }else{
+        }else if(strpos($res, 'window.code=400;') || strpos($res, 'window.code=408;')){     //请求过期，重新获取uuid
+            WxGetItem::getUuid();
             Redis::hset($this->testMsgKey, date('Y-m-d H:i:s'), $res);
+        }else{
+            Redis::hset($this->testMsgKey, date('Y-m-d H:i:s'), 'else::'.$res);
             exit();
         }
     }
