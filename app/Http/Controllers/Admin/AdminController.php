@@ -32,12 +32,8 @@ class AdminController extends Controller
 
     public function webwxnewloginpage(Request $request)
     {
-        $res['ticket'] = $request->input('ticket','');
-        $res['uuid'] = $request->input('uuid','');
-        $res['lang'] = $request->input('lang','');
-        $res['scan'] = $request->input('scan','');
 
-        return response()->json($res);
+        return response()->json($request);
     }
 
     public function dl()
