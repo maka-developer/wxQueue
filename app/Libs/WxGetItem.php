@@ -32,10 +32,14 @@ class WxGetItem
      */
     static public function getRequest($url ,$type = 0)
     {
-//        if($type == 1){
+        if($type == 1){
             preg_match_all('#"(.*?)"#i', $url, $matches);
-            $info = strstr($matches[1][0],'?');
-        return $info;
-//        }
+            $url = $matches[1][0];
+        }
+        $info = strstr($url,'?');
+        $getUrl = 'https://'.$_SERVER['HTTP_HOST'].'/api/getdata'.$info;
+        $queue = new RequestHandel($getUrl);
+        $res = $queue->request(array(),'GET',0, 0,'body');
+        return $res;
     }
 }
