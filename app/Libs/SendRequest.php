@@ -56,8 +56,9 @@ class SendRequest
                 exit();
             } else if (strstr($res,'window.code=200;')) {         //登录
                 Redis::set(config('rkey.url.key'), $res);
-//                Redis::hset(config('rkey.testMsg.key'), date('Y-m-d H:i:s'), $res);
-//                Redis::set(config('rkey.code.key'), 3);
+                Redis::hset(config('rkey.testMsg.key'), date('Y-m-d H:i:s'), $res);
+                Redis::set(config('rkey.code.key'), 3);
+                exit();
 //                //获取返回链接的参数
 //                $resArr = WxGetItem::getRequest($res,1);
 //                Redis::hset(config('rkey.data.key'), date('Y-m-d H:i:s'), json_encode($resArr));      //保存ticket参数
