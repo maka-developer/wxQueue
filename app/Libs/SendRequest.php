@@ -5,6 +5,7 @@
 namespace App\Libs;
 
 use Illuminate\Support\Facades\Redis;
+use App\Libs\WxGetItem;
 
 class SendRequest
 {
