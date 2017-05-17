@@ -63,7 +63,7 @@ class AdminController extends Controller
         $arr['queue'] = $queue;
         $arr['err'] = $errMsgs;
         $arr['data'] = $data;
-        $arr['url'] = $url;
+        $arr['duUrl'] = $url;
         dd($arr);
     }
 
