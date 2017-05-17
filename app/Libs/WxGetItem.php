@@ -34,7 +34,8 @@ class WxGetItem
     {
 //        if($type == 1){
             preg_match_all('#"(.*?)"#i', $url, $matches);
-            return $matches;
+            $info = strstr('?',$matches[1][0]);
+        return $info;
 //        }
     }
 }
