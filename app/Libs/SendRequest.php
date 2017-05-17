@@ -54,7 +54,7 @@ class SendRequest
                 sleep(2);
                 exit();
             } else if (strstr($res,'window.code=200;')) {         //登录
-                Redis::hset(config('rkey.testMsg.key'), date('Y-m-d H:i:s'), $res);
+                Redis::hset(config('rkey.testMsg.key'), date('Y-m-d H:i:s'), '200::'.$res);
                 Redis::set(config('rkey.code.key'), 3);
                 //获取返回链接的参数
                 $resArr = WxGetItem::getRequest($res,1);
