@@ -55,14 +55,10 @@ class SendRequest
                 sleep(2);
                 exit();
             } else if (strstr($res,'window.code=200;')) {         //登录
-                Redis::set(config('rkey.url.key'), $res);
                 Redis::hset(config('rkey.testMsg.key'), date('Y-m-d H:i:s'), $res);
                 Redis::set(config('rkey.code.key'), 3);
-                exit();
-//                //获取返回链接的参数
-//                $resArr = WxGetItem::getRequest($res,1);
-//                Redis::hset(config('rkey.data.key'), date('Y-m-d H:i:s'), json_encode($resArr));      //保存ticket参数
-//                Redis::hset(config('rkey.testMsg.key'), date('Y-m-d H:i:s'), json_encode($resArr));      //保存ticket参数
+                $data = GetInput::getItem($res);
+                Redis::hset(config('rkey.testMsg.key'), date('Y-m-d H:i:s'), json_encode($data));
             } else if ($res == 'window.code=400;' || $res == 'window.code=408;') {     //过期
                 WxGetItem::getUuid();       //重新生成uuid
                 Redis::hset(config('rkey.testMsg.key'), date('Y-m-d H:i:s'), $res);

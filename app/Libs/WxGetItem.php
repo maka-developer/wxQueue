@@ -25,10 +25,11 @@ class WxGetItem
         Redis::set(config('rkey.code.key'), 0);
     }
 
-    /*
+    /***
      *  获取url中参数
      *  type：0 正常url
      *        1 带引号和代码的url
+     *  队列中不能curl访问
      */
     static public function getRequest($url ,$type = 0)
     {

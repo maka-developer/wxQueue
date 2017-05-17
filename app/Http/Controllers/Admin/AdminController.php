@@ -4,6 +4,7 @@ namespace app\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Jobs\WxLoading;
+use App\Libs\GetInput;
 use App\Libs\RequestHandel;
 use App\Libs\SendRequest;
 use App\Libs\WxGetItem;
@@ -28,11 +29,10 @@ class AdminController extends Controller
 
         WxGetItem::getUuid();
         //请求成功  得到uuid， 启动队列， 开始监听登录接口， 页面持续加载
-//        dispatch(new WxLoading());
+        dispatch(new WxLoading());
 
         // $code = Redis::get(config('rkey.code.key'));     //获取uuid
-         $sendRequest = new SendRequest();
-         $sendRequest->loginPage();
+        // $sendRequest = new SendRequest();
         // $sendRequest->sendLogin($code);
         // $uuid = Redis::get(config('rkey.uuid.key'));     //获取uuid
         // $tip = 1;                                          //默认tip为1 未扫码
@@ -56,7 +56,6 @@ class AdminController extends Controller
         $errMsgs = Redis::hGetAll(config('rkey.errorMsg.key'));
         $queue = Redis::zRevRange('queues:default:reserved', 0, -1);
         $data = Redis::hGetAll(config('rkey.data.key'));
-        $url = Redis::get(config('rkey.url.key'));
 
         $arr['url'] = 'https://login.weixin.qq.com/qrcode/'.$uuid;
         $arr['code'] = $code;
@@ -64,13 +63,14 @@ class AdminController extends Controller
         $arr['queue'] = $queue;
         $arr['err'] = $errMsgs;
         $arr['data'] = $data;
-        $arr['duUrl'] = $url;
         dd($arr);
     }
 
     public function test(){
-        $url = Redis::hGet(config('rkey.errorMsg.key'),'2017-05-17 09:36:30');
-        $res = WxGetItem::getRequest($url,1);
+        $data = 'window.code=200;\n
+      window.redirect_uri="https://wx2.qq.com/cgi-bin/mmwebwx-bin/webwxnewloginpage?ticket=A7aMxW7XyhVkEgiBTcO4ARlS@qrticket_0&uuid=YdCo10e3zg==&lang=zh_CN&scan=1495029818"; ◀
+      "';
+        $res = GetInput::getWebWxNewLoginPage($data);
         dd($res);
     }
 
