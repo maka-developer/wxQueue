@@ -41,7 +41,7 @@ class AdminController extends Controller
         // var_dump($res);
     }
 
-    public function webwxnewloginpage(Request $request)
+    public function getdata(Request $request)
     {
 
         return response()->json($request);
@@ -65,6 +65,9 @@ class AdminController extends Controller
 
     public function test(){
         $url = 'window.redirect_uri="https://wx2.qq.com/cgi-bin/mmwebwx-bin/webwxnewloginpage?ticket=A4zC2Cp79z8grb8jXaY7DQIp@qrticket_0&uuid=gelqxc_XmQ==&lang=zh_CN&scan=1494937733"';
+        $res = WxGetItem::getRequest($url);
+        dd($res);
+        exit();
         preg_match_all('#"(.*?)"#i', $url, $matches);
         $pathinfo = basename($matches[1][0]);
         $url = 'https://' . $_SERVER['HTTP_HOST'] . '/api/' . $pathinfo;

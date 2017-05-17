@@ -16,6 +16,18 @@ return [
     ],
 
     /*
+     *  形式
+     *      hkey=>[
+     *              key=>value
+     *          ]
+     */
+    'data'=>[
+        'key'=>'wx::data',
+        'type'=>'hash',
+        'ins'=>'ticket, scan'
+    ],
+
+    /*
      *  形式，同uuid
      *  0   =>  获取uuid
      *  1   =>  用户扫码

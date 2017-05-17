@@ -14,4 +14,4 @@
 Route::get('/', 'Admin\AdminController@index');
 Route::get('/dl', 'Admin\AdminController@dl');
 Route::get('/test', 'Admin\AdminController@test');
-Route::get('/api/webwxnewloginpage', 'Admin\AdminController@webwxnewloginpage');
+Route::get('/api/getdata', 'Admin\AdminController@getdata');

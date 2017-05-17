@@ -38,7 +38,7 @@ class WxLoading implements ShouldQueue
         if($code < 3) {
             $sendRequest->sendLogin($code);
         }else{
-//            $sendRequest->loginPage($code);
+            $sendRequest->loginPage($code);
         }
     }
 }
