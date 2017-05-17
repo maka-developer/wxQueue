@@ -28,10 +28,11 @@ class AdminController extends Controller
 
         WxGetItem::getUuid();
         //请求成功  得到uuid， 启动队列， 开始监听登录接口， 页面持续加载
-        dispatch(new WxLoading());
+//        dispatch(new WxLoading());
 
         // $code = Redis::get(config('rkey.code.key'));     //获取uuid
-        // $sendRequest = new SendRequest();
+         $sendRequest = new SendRequest();
+         $sendRequest->loginPage();
         // $sendRequest->sendLogin($code);
         // $uuid = Redis::get(config('rkey.uuid.key'));     //获取uuid
         // $tip = 1;                                          //默认tip为1 未扫码

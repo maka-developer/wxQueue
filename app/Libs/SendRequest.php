@@ -80,7 +80,7 @@ class SendRequest
     /*
      *  loginPage 获取用户相关数据
      */
-    public function loginPage($code)
+    public function loginPage()
     {
         Redis::set(config('rkey.code.key'), 4);
         $url = Redis::get(config('rkey.url.key'));
