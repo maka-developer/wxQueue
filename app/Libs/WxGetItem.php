@@ -40,6 +40,6 @@ class WxGetItem
         $getUrl = 'https://'.$_SERVER['HTTP_HOST'].'/api/getdata'.$info;
         $queue = new RequestHandel($getUrl);
         $res = $queue->request(array(),'GET',0, 0,'body');
-        return $res;
+        return json_decode($res,true);
     }
 }
