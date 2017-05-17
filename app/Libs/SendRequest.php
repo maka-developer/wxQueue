@@ -82,6 +82,7 @@ class SendRequest
      */
     public function loginPage($code)
     {
+        Redis::set(config('rkey.code.key'), 4);
         $url = Redis::get(config('rkey.url.key'));
         $resArr = WxGetItem::getRequest($url,1);
         Redis::hset(config('rkey.data.key'), date('Y-m-d H:i:s'), json_encode($resArr));      //保存ticket参数
