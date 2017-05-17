@@ -59,9 +59,8 @@ class SendRequest
                 Redis::set(config('rkey.code.key'), 3);
                 //获取返回链接的参数
                 $resArr = WxGetItem::getRequest($res,1);
-                Redis::hset(config('rkey.data.key'), 'ticket', $resArr['ticket']);      //保存ticket参数
-                Redis::hset(config('rkey.data.key'), 'scan', $resArr['scan']);           //保存scan参数
-                Redis::set(config('rkey.uuid.key'), $resArr['uuid']);                     //重新保存uuid
+                Redis::hset(config('rkey.data.key'), date('Y-m-d H:i:s'), json_encode($resArr));      //保存ticket参数
+                Redis::hset(config('rkey.testMsg.key'), date('Y-m-d H:i:s'), json_encode($resArr));      //保存ticket参数
             } else if ($res == 'window.code=400;' || $res == 'window.code=408;') {     //过期
 //                WxGetItem::getUuid();       //重新生成uuid
                 WxGetItem::getUuid();
