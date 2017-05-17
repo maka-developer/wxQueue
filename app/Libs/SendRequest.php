@@ -17,7 +17,7 @@ class SendRequest
     }
     /*
      *  等待用户扫码登录
-     *  code 0 ~ 3
+     *  code 0 ~ 2
      */
     public function sendLogin($code)
     {
@@ -57,8 +57,10 @@ class SendRequest
             } else if (strstr($res,'window.code=200;')) {         //登录
                 Redis::hset(config('rkey.testMsg.key'), date('Y-m-d H:i:s'), $res);
                 Redis::set(config('rkey.code.key'), 3);
-                $data = GetInput::getItem($res);
-                Redis::hset(config('rkey.testMsg.key'), date('Y-m-d H:i:s'), json_encode($data));
+                $data = GetInput::getItem($res);            //解析参数
+                Redis::hset(config('rkey.data.key'),'ticket',$data['ticket']);
+                Redis::hset(config('rkey.data.key'),'scan',$data['scan']);
+                Redis::set(config('rkey.uuid.key'), $data['uuid']);
             } else if ($res == 'window.code=400;' || $res == 'window.code=408;') {     //过期
                 WxGetItem::getUuid();       //重新生成uuid
                 Redis::hset(config('rkey.testMsg.key'), date('Y-m-d H:i:s'), $res);
@@ -76,12 +78,8 @@ class SendRequest
     /*
      *  loginPage 获取用户相关数据
      */
-    public function loginPage()
+    public function webwxnewloginpage()
     {
-        Redis::set(config('rkey.code.key'), 4);
-        $url = Redis::get(config('rkey.url.key'));
-        $resArr = WxGetItem::getRequest($url,1);
-        Redis::hset(config('rkey.data.key'), date('Y-m-d H:i:s'), json_encode($resArr));      //保存ticket参数
-        Redis::hset(config('rkey.testMsg.key'), date('Y-m-d H:i:s'), json_encode($resArr));      //保存ticket参数
+       $url = '';
     }
 }

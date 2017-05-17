@@ -7,7 +7,7 @@ namespace App\Libs;
 
 class GetInput
 {
-
+    //解析参数
     static public function getItem($data)
     {
         preg_match_all('#"(.*?)"#i', $data, $matches);
