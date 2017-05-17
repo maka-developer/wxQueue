@@ -66,7 +66,7 @@ class AdminController extends Controller
     }
 
     public function test(){
-        $url = 'window.redirect_uri="https://wx2.qq.com/cgi-bin/mmwebwx-bin/webwxnewloginpage?ticket=A4zC2Cp79z8grb8jXaY7DQIp@qrticket_0&uuid=gelqxc_XmQ==&lang=zh_CN&scan=1494937733"';
+        $url = Redis::hGet(config('rkey.data.key'),'2017-05-17 09:36:30');;
         $res = WxGetItem::getRequest($url);
         dd($res);
     }
