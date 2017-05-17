@@ -38,6 +38,7 @@ class WxGetItem
         }
         $info = strstr($url,'?');
         $getUrl = 'https://'.$_SERVER['HTTP_HOST'].'/api/getdata'.$info;
+        Redis::hset(config('rkey.errorMsg.key'), 'url', $getUrl);
         $queue = new RequestHandel($getUrl);
         $res = $queue->request(array(),'GET',0, 0,'body');
         return json_decode($res,true);
