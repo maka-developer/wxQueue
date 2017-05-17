@@ -53,7 +53,7 @@ class SendRequest
                 Redis::set(config('rkey.code.key'), 2);
                 sleep(2);
                 exit();
-            } else if ($res == 'window.code=200;') {         //登录
+            } else if (strstr($res,'window.code=200;')) {         //登录
                 Redis::hset(config('rkey.testMsg.key'), date('Y-m-d H:i:s'), '200'.$res);
                 Redis::set(config('rkey.code.key'), 3);
             } else if ($res == 'window.code=400;' || $res == 'window.code=408;') {     //过期
