@@ -49,23 +49,23 @@ class SendRequest
                 Redis::set(config('rkey.code.key'), 0);
                 exit();
             } else if ($res == 'window.code=201;') {        //通过扫码
-                Redis::hset(config('rkey.testMsg.key'), date('Y-m-d H:i:s'), $res);
+                Redis::hset(config('rkey.testMsg.key'), date('Y-m-d H:i:s'), '201'.$res);
                 Redis::set(config('rkey.code.key'), 2);
                 sleep(2);
                 exit();
             } else if ($res == 'window.code=200;') {         //登录
-                Redis::hset(config('rkey.testMsg.key'), date('Y-m-d H:i:s'), $res);
+                Redis::hset(config('rkey.testMsg.key'), date('Y-m-d H:i:s'), '200'.$res);
                 Redis::set(config('rkey.code.key'), 3);
             } else if ($res == 'window.code=400;' || $res == 'window.code=408;') {     //过期
                 WxGetItem::getUuid();       //重新生成uuid
-                Redis::hset(config('rkey.testMsg.key'), date('Y-m-d H:i:s'), $res);
+                Redis::hset(config('rkey.testMsg.key'), date('Y-m-d H:i:s'), '400'.$res);
                 $errArr['url'] = $url;
                 $errArr['code'] = $code;
                 Redis::hset(config('rkey.errorMsg.key'),date('Y-m-d H:i:s'),json_encode($errArr));
                 Redis::set(config('rkey.code.key'), 1);
                 exit();
             } else {
-                Redis::hset(config('rkey.testMsg.key'), date('Y-m-d H:i:s'), $res);
+                Redis::hset(config('rkey.testMsg.key'), date('Y-m-d H:i:s'), 'else'.$res);
             }
         }
     }
