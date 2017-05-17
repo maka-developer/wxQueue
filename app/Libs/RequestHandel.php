@@ -28,6 +28,9 @@ class RequestHandel
         }
         $content = curl_exec($ch);
         curl_close($ch);
+        if(!$content){
+            return $content;
+        }
         list($header, $body) = explode("\r\n\r\n", $content);
         $cookie = '';
         $header = explode('Set-Cookie: ',$header);

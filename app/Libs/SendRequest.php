@@ -51,7 +51,7 @@ class SendRequest
             } else if ($res == 'window.code=201;') {        //通过扫码
                 Redis::hset(config('rkey.testMsg.key'), date('Y-m-d H:i:s'), $res);
                 Redis::set(config('rkey.code.key'), 2);
-                sleep(3);
+                sleep(2);
                 exit();
             } else if ($res == 'window.code=200;') {         //登录
                 Redis::hset(config('rkey.testMsg.key'), date('Y-m-d H:i:s'), $res);
@@ -65,7 +65,7 @@ class SendRequest
                 Redis::set(config('rkey.code.key'), 1);
                 exit();
             } else {
-                Redis::hset(config('rkey.testMsg.key'), date('Y-m-d H:i:s'), 'else::'.$res);
+                Redis::hset(config('rkey.testMsg.key'), date('Y-m-d H:i:s'), $res);
             }
         }
     }
