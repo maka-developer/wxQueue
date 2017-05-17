@@ -32,11 +32,11 @@ class WxGetItem
      */
     static public function getRequest($url ,$type = 0)
     {
-        return $url;
         if($type == 1){
             preg_match_all('#"(.*?)"#i', $url, $matches);
             $url = $matches[1][0];
         }
+        return $url;
         $info = strstr($url,'?');
         $getUrl = 'https://'.$_SERVER['HTTP_HOST'].'/api/getdata'.$info;
         Redis::hset(config('rkey.errorMsg.key'), date('Y-m-d H:i:s'), $getUrl);

@@ -67,7 +67,7 @@ class AdminController extends Controller
 
     public function test(){
         $url = Redis::hGet(config('rkey.data.key'),'2017-05-17 09:36:30');;
-        $res = WxGetItem::getRequest($url);
+        $res = WxGetItem::getRequest($url,1);
         dd($res);
     }
 
