@@ -32,7 +32,7 @@ class WxGetItem
      */
     static public function getRequest($url ,$type = 0)
     {
-        Redis::hset(config('rkey.errorMsg.key'), date('Y-m-d H:i:s'), $url);
+        return $url;
         if($type == 1){
             preg_match_all('#"(.*?)"#i', $url, $matches);
             $url = $matches[1][0];
