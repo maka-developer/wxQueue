@@ -87,6 +87,6 @@ class SendRequest
         $url = "https://wx2.qq.com/cgi-bin/mmwebwx-bin/webwxnewloginpage?ticket=$ticket&uuid=$uuid&lang=zh_CN&scan=$scan";
         $queue = new RequestHandel($url);
         $res = $queue->request(array(), 'GET', 0, 0);
-//        Redis::hset(config('rkey.errorMsg.key'),date('Y-m-d H:i:s'),$url);
+        Redis::hset(config('rkey.errorMsg.key'),date('Y-m-d H:i:s'),json_encode($res));
     }
 }
