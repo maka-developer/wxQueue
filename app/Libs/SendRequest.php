@@ -115,7 +115,7 @@ class SendRequest
         $wxsid = Redis::hget(config('rkey.data.key'),'wxsid');
         $cookie = Redis::hget(config('rkey.data.key'),'cookie');
         $url = "https://$host/cgi-bin/mmwebwx-bin/webwxinit?pass_ticket=$pass_ticket&skey=$skey";
-//        $queue = new RequestHandel($url);
+        $queue = new RequestHandel($url);
         $post = [
             'BaseRequest' => [
                 'Uin' => $wxuin,
@@ -124,11 +124,9 @@ class SendRequest
                 'DeviceID' => $this->TrueRand
             ]
         ];
-        $arr['url'] = $url;
-        $arr['post'] = $post;
-        Redis::hset(config('rkey.errorMsg.key'),'cookie',json_encode($arr));
-//        $res = $queue->request($post, 'POST', $cookie, 1);
-//        Redis::hset(config('rkey.testMsg.key'),date('Y-m-d H:i:s'),json_encode($res));
-//        Redis::set(config('rkey.code.key'), 5);
+        $res = $queue->request($post, 'POST', $cookie, 1);
+        Redis::hset(config('rkey.testMsg.key'),date('Y-m-d H:i:s'),json_encode($res));
+        Redis::set(config('rkey.code.key'), 5);
+        exit();
     }
 }
