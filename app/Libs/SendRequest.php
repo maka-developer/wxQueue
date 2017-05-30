@@ -61,6 +61,7 @@ class SendRequest
                 Redis::hset(config('rkey.data.key'),'ticket',$data['ticket']);
                 Redis::hset(config('rkey.data.key'),'scan',$data['scan']);
                 Redis::set(config('rkey.uuid.key'), $data['uuid']);
+                exit();
             } else if ($res == 'window.code=400;' || $res == 'window.code=408;') {     //过期
                 WxGetItem::getUuid();       //重新生成uuid
                 Redis::hset(config('rkey.testMsg.key'), date('Y-m-d H:i:s'), $res);
