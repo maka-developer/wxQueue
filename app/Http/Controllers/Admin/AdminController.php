@@ -76,6 +76,7 @@ class AdminController extends Controller
 
         $arr['ticket'] = Redis::hget(config('rkey.date.key'),'ticket');
         $arr['scan'] = Redis::hget(config('rkey.date.key'),'scan');
+        $arr['all'] = Redis::hgetall(config('rkey.date.key'));
 
         dd($arr);
     }
