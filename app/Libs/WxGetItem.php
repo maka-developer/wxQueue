@@ -24,24 +24,4 @@ class WxGetItem
         Redis::set(config('rkey.uuid.key'), $uuid);
         Redis::set(config('rkey.code.key'), 0);
     }
-
-    /***
-     *  获取url中参数
-     *  type：0 正常url
-     *        1 带引号和代码的url
-     *  队列中不能curl访问
-     */
-    static public function getRequest($url ,$type = 0)
-    {
-        if($type == 1){
-            preg_match_all('#"(.*?)"#i', $url, $matches);
-            $url = $matches[1][0];
-        }
-        $info = strstr($url,'?');
-        $getUrl = 'https://'.$_SERVER['HTTP_HOST'].'/api/getdata'.$info;
-        Redis::hset(config('rkey.errorMsg.key'), date('Y-m-d H:i:s'), $getUrl);
-        $queue = new RequestHandel($getUrl);
-        $res = $queue->request(array(),'GET',0, 0,'body');
-        return json_decode($res,true);
-    }
 }
