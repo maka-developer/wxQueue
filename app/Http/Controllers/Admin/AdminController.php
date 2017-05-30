@@ -66,12 +66,18 @@ class AdminController extends Controller
         dd($arr);
     }
 
-    public function test(){
-        $data = 'window.code=200;\n
-      window.redirect_uri="https://wx2.qq.com/cgi-bin/mmwebwx-bin/webwxnewloginpage?ticket=A7aMxW7XyhVkEgiBTcO4ARlS@qrticket_0&uuid=YdCo10e3zg==&lang=zh_CN&scan=1495029818"; ◀
-      "';
-        $res = GetInput::getWebWxNewLoginPage($data);
-        dd($res);
+    public function test()
+    {
+//        $data = 'window.code=200;\n
+//      window.redirect_uri="https://wx2.qq.com/cgi-bin/mmwebwx-bin/webwxnewloginpage?ticket=A7aMxW7XyhVkEgiBTcO4ARlS@qrticket_0&uuid=YdCo10e3zg==&lang=zh_CN&scan=1495029818"; ◀
+//      "';
+//        $res = GetInput::getWebWxNewLoginPage($data);
+//        dd($res);
+
+        $arr['ticket'] = Redis::hget(config('rkey.date.key'),'ticket');
+        $arr['scan'] = Redis::hget(config('rkey.date.key'),'scan');
+
+        dd($arr);
     }
 
 }
