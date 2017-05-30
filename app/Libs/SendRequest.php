@@ -10,10 +10,12 @@ use App\Libs\WxGetItem;
 class SendRequest
 {
     private $TurnTime;
+    private $TrueRand;
 
     public function __construct()
     {
         $this->TurnTime = time().'000';
+        $this->TrueRand = 'e'.time().rand(10000,99999);
     }
     /*
      *  等待用户扫码登录
@@ -60,6 +62,7 @@ class SendRequest
                 $data = GetInput::getItem($res);            //解析参数
                 Redis::hset(config('rkey.data.key'),'ticket',$data['ticket']);
                 Redis::hset(config('rkey.data.key'),'scan',$data['scan']);
+                Redis::hset(config('rkey.data.key'),'host',$data['host']);  //域名地址
                 Redis::set(config('rkey.uuid.key'), $data['uuid']);
                 exit();
             } else if ($res == 'window.code=400;' || $res == 'window.code=408;') {     //过期
@@ -83,8 +86,9 @@ class SendRequest
     {
         $ticket = Redis::hget(config('rkey.data.key'),'ticket');
         $scan = Redis::hget(config('rkey.data.key'),'scan');
+        $host = Redis::hget(config('rkey.data.key'),'host');
         $uuid = Redis::get(config('rkey.uuid.key'));       //uuid;
-        $url = "https://wx2.qq.com/cgi-bin/mmwebwx-bin/webwxnewloginpage?ticket=$ticket&uuid=$uuid&lang=zh_CN&scan=$scan";
+        $url = "https://$host/cgi-bin/mmwebwx-bin/webwxnewloginpage?ticket=$ticket&uuid=$uuid&lang=zh_CN&scan=$scan";
         $queue = new RequestHandel($url);
         $res = $queue->request(array(), 'GET', 0, 0);
         Redis::hset(config('rkey.testMsg.key'),date('Y-m-d H:i:s'),json_encode($res));
@@ -106,6 +110,21 @@ class SendRequest
     {
         $pass_ticket = Redis::hget(config('rkey.data.key'),'pass_ticket');
         $skey = Redis::hget(config('rkey.data.key'),'skey');
-
+        $host = Redis::hget(config('rkey.data.key'),'host');
+        $wxuin = Redis::hget(config('rkey.data.key'),'wxuin');
+        $wxsid = Redis::hget(config('rkey.data.key'),'wxsid');
+        $cookie = Redis::hget(config('rkey.data.key'),'cookie');
+        $url = "https://$host/cgi-bin/mmwebwx-bin/webwxinit?pass_ticket=$pass_ticket&skey=$skey";
+        $queue = new RequestHandel($url);
+        $post = [
+            'BaseRequest' => [
+                'Uin' => $wxuin,
+                'Sid' => $wxsid,
+                'Skey' => $skey,
+                'DeviceID' => $this->TrueRand
+            ]
+        ];
+        $res = $queue->request($post, 'POST', $cookie, 1);
+        Redis::hset(config('rkey.testMsg.key'),date('Y-m-d H:i:s'),json_encode($res));
     }
 }
