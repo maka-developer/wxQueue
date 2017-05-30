@@ -80,7 +80,7 @@ class AdminController extends Controller
 
         //获取域名
         $arr['str'] = Redis::hget(config('rkey.testMsg.key'),'2017-05-30 09:06:53');
+        $arr['data'] = GetInput::getItem($arr['str']);            //解析参数
         dd($arr);
     }
-
 }
