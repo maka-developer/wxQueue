@@ -99,4 +99,13 @@ class SendRequest
         Redis::set(config('rkey.code.key'), 4);
         exit();
     }
+    /*
+     * 微信初始化
+     */
+    public function webwxinit()
+    {
+        $pass_ticket = Redis::hget(config('rkey.data.key'),'pass_ticket');
+        $skey = Redis::hget(config('rkey.data.key'),'skey');
+
+    }
 }

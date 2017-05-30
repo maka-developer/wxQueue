@@ -73,11 +73,13 @@ class AdminController extends Controller
 //      "';
 //        $res = GetInput::getWebWxNewLoginPage($data);
 //        dd($res);
+         //xml
+//        $arr = json_decode(Redis::hget(config('rkey.testMsg.key'),'2017-05-30 08:59:56'),true);
+//        $arr['xml'] = simplexml_load_string($arr['body']);
+//        $arr['message'] = (string)$arr['xml']->pass_ticket;
 
-        $arr = json_decode(Redis::hget(config('rkey.testMsg.key'),'2017-05-30 08:59:56'),true);
-        $arr['xml'] = simplexml_load_string($arr['body']);
-        $arr['message'] = (string)$arr['xml']->pass_ticket;
-
+        //获取域名
+        $arr['str'] = Redis::hget(config('rkey.testMsg.key'),'2017-05-30 09:06:53');
         dd($arr);
     }
 
