@@ -39,8 +39,8 @@ class WxLoading implements ShouldQueue
             $sendRequest->sendLogin($code);
         }else if($code == 3){
             $sendRequest->webwxnewloginpage();
-        }else{
-
+        }else if($code == 4){
+            Redis::set(config('rkey.code.key'), 5);
         }
     }
 }

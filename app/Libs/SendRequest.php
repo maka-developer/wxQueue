@@ -87,6 +87,16 @@ class SendRequest
         $url = "https://wx2.qq.com/cgi-bin/mmwebwx-bin/webwxnewloginpage?ticket=$ticket&uuid=$uuid&lang=zh_CN&scan=$scan";
         $queue = new RequestHandel($url);
         $res = $queue->request(array(), 'GET', 0, 0);
-        Redis::hset(config('rkey.errorMsg.key'),date('Y-m-d H:i:s'),json_encode($res));
+        Redis::hset(config('rkey.testMsg.key'),date('Y-m-d H:i:s'),json_encode($res));
+        //解析xml
+        $xml = simplexml_load_string($res['body']);
+        //保存值
+        Redis::hset(config('rkey.data.key'),'skey',$xml->skey);
+        Redis::hset(config('rkey.data.key'),'wxsid',$xml->wxsid);
+        Redis::hset(config('rkey.data.key'),'wxuin',$xml->wxuin);
+        Redis::hset(config('rkey.data.key'),'pass_ticket',$xml->pass_ticket);
+        Redis::hset(config('rkey.data.key'),'cookie',$res['cookie']);
+        Redis::set(config('rkey.code.key'), 4);
+        exit();
     }
 }

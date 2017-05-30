@@ -24,7 +24,7 @@ return [
     'data'=>[
         'key'=>'wx::data',
         'type'=>'hash',
-        'ins'=>'ticket, scan'
+        'ins'=>'ticket, scan, cookie'
     ],
 
     /*
