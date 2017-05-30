@@ -74,7 +74,7 @@ class AdminController extends Controller
 //        $res = GetInput::getWebWxNewLoginPage($data);
 //        dd($res);
 
-        $arr = json_decode(Redis::hget(config('rkey.errorMsg.key'),'2017-05-30 08:23:47'));
+        $arr = json_decode(Redis::hget(config('rkey.errorMsg.key'),'2017-05-30 08:23:47'),true);
         $xml = simplexml_load_string($arr['body']);
 
         dd($xml);
