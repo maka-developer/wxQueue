@@ -74,9 +74,9 @@ class AdminController extends Controller
 //        $res = GetInput::getWebWxNewLoginPage($data);
 //        dd($res);
 
-        $arr['ticket'] = Redis::hget(config('rkey.date.key'),'ticket');
-        $arr['scan'] = Redis::hget(config('rkey.date.key'),'scan');
-        $arr['all'] = Redis::hgetall(config('rkey.date.key'));
+        $arr['ticket'] = Redis::hget(config('rkey.data.key'),'ticket');
+        $arr['scan'] = Redis::hget(config('rkey.data.key'),'scan');
+        $arr['all'] = Redis::hgetall(config('rkey.data.key'));
 
         dd($arr);
     }
