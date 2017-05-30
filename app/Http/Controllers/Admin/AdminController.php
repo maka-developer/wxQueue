@@ -78,9 +78,9 @@ class AdminController extends Controller
 //        $arr['xml'] = simplexml_load_string($arr['body']);
 //        $arr['message'] = (string)$arr['xml']->pass_ticket;
 
-        //获取域名
-        $arr['str'] = Redis::hget(config('rkey.testMsg.key'),'2017-05-30 09:06:53');
-        $arr['data'] = GetInput::getItem($arr['str']);            //解析参数
+        $arr['str'] = Redis::hset(config('rkey.testMsg.key'),'2017-05-30 10:19:15');
+        $arr['item'] = json_decode($arr['str'],true);
+        
         dd($arr);
     }
 }
