@@ -12,6 +12,7 @@ class GetInput
     {
         preg_match_all('#"(.*?)"#i', $data, $matches);
         $url = $matches[1][0];
+        return parse_url($url);
         $info = substr(strstr($url,'?'),1);
         $arr = explode('&',$info);
         $resArr = array();
