@@ -75,9 +75,9 @@ class AdminController extends Controller
 //        dd($res);
 
         $arr = json_decode(Redis::hget(config('rkey.errorMsg.key'),'2017-05-30 08:23:47'),true);
-        $xml = simplexml_load_string($arr['body']);
-
-        dd($xml);
+        $arr['xml'] = simplexml_load_string($arr['body']);
+        $arr['message'] = $arr['xml']->message;
+        dd($arr);
     }
 
 }
