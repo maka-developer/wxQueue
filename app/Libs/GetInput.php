@@ -12,10 +12,11 @@ class GetInput
     {
         preg_match_all('#"(.*?)"#i', $data, $matches);
         $url = $matches[1][0];
-        return parse_url($url);
-        $info = substr(strstr($url,'?'),1);
+        $server = parse_url($url);
+        $info = $server['query'];
         $arr = explode('&',$info);
         $resArr = array();
+        $resArr['host'] = $server['host'];
         foreach($arr as $key=>$value){
             $strArr = str_split($value);
             $resType = 0;
