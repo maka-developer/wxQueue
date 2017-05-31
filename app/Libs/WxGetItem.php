@@ -24,4 +24,23 @@ class WxGetItem
         Redis::set(config('rkey.uuid.key'), $uuid);
         Redis::set(config('rkey.code.key'), 0);
     }
+
+    static public function updateSyncKey($arr)
+    {
+        if($arr === false || empty($arr)){
+            return false;
+        }
+        $count = $arr['Count'];
+        $i = 0;
+        $resStr = '';
+        foreach($arr['List'] as $key=>$value){
+            if($i < $count){
+                $i++;
+                $resStr .= $key.'_'.$value.'|';
+            }else{
+                $resStr .= $key.'_'.$value;
+            }
+        }
+        return $resStr;
+    }
 }

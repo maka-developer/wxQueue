@@ -125,8 +125,12 @@ class SendRequest
             ]
         ];
         $res = $queue->request($post, 'POST', $cookie, 1);
-        Redis::hset(config('rkey.testMsg.key'),date('Y-m-d H:i:s'),json_encode($res));
-        Redis::set(config('rkey.code.key'), 5);
+        if($res['body']['User']['Uin'] == $wxuin){      //获取正确数据
+            Redis::set(config('rkey.code.key'), 5);
+            Redis::hset(config('rkey.testMsg.key'),date('Y-m-d H:i:s'),json_encode($res));
+        }else{      //获取错误数据
+            Redis::hset(config('rkey.errorMsg.key'),date('Y-m-d H:i:s'),json_encode($res));
+        }
         exit();
     }
 }
