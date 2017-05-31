@@ -31,14 +31,13 @@ class WxGetItem
             return false;
         }
         $count = $arr['Count'];
-        $i = 0;
         $resStr = '';
-        foreach($arr['List'] as $key=>$value){
-            if($i < $count){
-                $i++;
-                $resStr .= $key.'_'.$value.'|';
+        for($i=0; $i<$count; $i++){
+            $listArr = $arr['List'][$i];
+            if($i == $count - 1){
+                $resStr .= $listArr['Key'].'_'.$listArr['Val'];
             }else{
-                $resStr .= $key.'_'.$value;
+                $resStr .= $listArr['Key'].'_'.$listArr['Val'].'|';
             }
         }
         return $resStr;
