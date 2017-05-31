@@ -25,10 +25,11 @@ class WxGetItem
         Redis::set(config('rkey.code.key'), 0);
     }
 
+    //更新synckey
     static public function updateSyncKey($arr)
     {
         if($arr === false || empty($arr)){
-            return false;
+            Redis::hset(config('rkey.errorMsg.key'),date('Y-m-d H:i:s'),'err synckey::'.json_encode($arr));
         }
         $count = $arr['Count'];
         $resStr = '';
@@ -40,6 +41,6 @@ class WxGetItem
                 $resStr .= $listArr['Key'].'_'.$listArr['Val'].'|';
             }
         }
-        return $resStr;
+        Redis::hset(config('rkey.data.key'),'syncKey',$resStr);
     }
 }

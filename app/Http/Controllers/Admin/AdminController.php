@@ -80,7 +80,7 @@ class AdminController extends Controller
 
         $arr['str'] = Redis::hget(config('rkey.testMsg.key'),'2017-05-30 10:19:15');
         $arr['item'] = json_decode($arr['str'],true);
-        $arr['result'] = WxGetItem::updateSyncKey($arr['item']['body']['SyncKey']);
+        WxGetItem::updateSyncKey($arr['item']['body']['SyncKey']);
         dd($arr);
     }
 }

@@ -4,8 +4,8 @@
  */
 namespace App\Libs;
 
-use Illuminate\Support\Facades\Redis;
 use App\Libs\WxGetItem;
+use Illuminate\Support\Facades\Redis;
 
 class SendRequest
 {
@@ -128,6 +128,8 @@ class SendRequest
         if($res['body']['User']['Uin'] == $wxuin){      //获取正确数据
             Redis::set(config('rkey.code.key'), 5);
             Redis::hset(config('rkey.testMsg.key'),date('Y-m-d H:i:s'),json_encode($res));
+            //保存synckey
+            WxGetItem::updateSyncKey($res['body']['SyncKey']);
         }else{      //获取错误数据
             Redis::hset(config('rkey.errorMsg.key'),date('Y-m-d H:i:s'),json_encode($res));
         }
