@@ -41,8 +41,10 @@ class WxLoading implements ShouldQueue
             $sendRequest->webwxnewloginpage();
         }else if($code == 4){
             $sendRequest->webwxinit();
+        }else if($code == 5){
+            $sendRequest->webwxstatusnotify();
         }else{
-            Redis::set(config('rkey.code.key'), 6);
+            Redis::set(config('rkey.code.key'), 7);
         }
     }
 }

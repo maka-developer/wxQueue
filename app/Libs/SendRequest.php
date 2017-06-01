@@ -104,6 +104,8 @@ class SendRequest
     }
     /*
      * 微信初始化
+     * 1、获取用户相关信息
+     * 2、获取synckey除版
      */
     public function webwxinit()
     {
@@ -123,14 +125,12 @@ class SendRequest
                 'DeviceID' => $this->TrueRand
             ]
         ];
-        $arr['url'] = $url;
-        $arr['post'] = $post;
-        Redis::hset(config('rkey.errorMsg.key'), '请求数据：：'.date('Y-m-d H:i:s'),json_encode($arr));
         $res = $queue->request($post, 'POST', '', 1);
         if($res['body']['User']['Uin'] == $wxuin){      //获取正确数据
             Redis::set(config('rkey.code.key'), 5);
             Redis::hset(config('rkey.testMsg.key'),date('Y-m-d H:i:s'),json_encode($res));
             //保存synckey
+            Redis::hset(config('rkey.data.key'), 'username', (string) $res['body']['User']['UserName']);
             WxGetItem::updateSyncKey($res['body']['SyncKey']);
         }else{      //获取错误数据
             Redis::hset(config('rkey.errorMsg.key'),date('Y-m-d H:i:s'),json_encode($res));
@@ -142,6 +142,28 @@ class SendRequest
      */
     public function webwxstatusnotify()
     {
-
+        $pass_ticket = Redis::hget(config('rkey.data.key'),'pass_ticket');
+        $host = Redis::hget(config('rkey.data.key'),'host');
+        $userName = Redis::hget(config('rkey.data.key'), 'username');
+        $wxuin = Redis::hget(config('rkey.data.key'),'wxuin');
+        $wxsid = Redis::hget(config('rkey.data.key'),'wxsid');
+        $skey = Redis::hget(config('rkey.data.key'),'skey');
+        $url = "https://$host/cgi-bin/mmwebwx-bin/webwxstatusnotify?pass_ticket=$pass_ticket";
+        $queue = new RequestHandel($url);
+        $post = [
+            'BaseRequest' => [
+                'Uin' => $wxuin,
+                'Sid' => $wxsid,
+                'Skey' => $skey,
+                'DeviceID' => $this->TrueRand
+            ],
+            'ClientMsgId'=>$this->TurnTime,
+            'Code' => 3,
+            'FromUserName' => $userName,
+            'ToUserName' => $userName
+        ];
+        $res = $queue->request($post, 'POST', '', 1);
+        Redis::hset(config('rkey.testMsg.key'),date('Y-m-d H:i:s'),json_encode($res));
+        Redis::set(config('rkey.code.key'), 6);
     }
 }
