@@ -54,7 +54,6 @@ class SendRequest
             } else if ($res == 'window.code=201;') {        //通过扫码
                 Redis::hset(config('rkey.testMsg.key'), date('Y-m-d H:i:s'), $res);
                 Redis::set(config('rkey.code.key'), 2);
-                sleep(2);
                 exit();
             } else if (strstr($res,'window.code=200;')) {         //登录
                 Redis::hset(config('rkey.testMsg.key'), date('Y-m-d H:i:s'), $res);
@@ -124,6 +123,9 @@ class SendRequest
                 'DeviceID' => $this->TrueRand
             ]
         ];
+        $arr['url'] = $url;
+        $arr['post'] = $post;
+        Redis::hset(config('rkey.errorMsg.key'), '请求数据：：'.date('Y-m-d H:i:s'),json_encode($arr));
         $res = $queue->request($post, 'POST', $cookie, 1);
         if($res['body']['User']['Uin'] == $wxuin){      //获取正确数据
             Redis::set(config('rkey.code.key'), 5);
