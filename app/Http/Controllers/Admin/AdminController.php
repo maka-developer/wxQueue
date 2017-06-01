@@ -78,7 +78,7 @@ class AdminController extends Controller
 //        $arr['xml'] = simplexml_load_string($arr['body']);
 //        $arr['message'] = (string)$arr['xml']->pass_ticket;
 
-        $arr['str'] = Redis::hget(config('rkey.testMsg.key'),'2017-05-30 10:19:15');
+        $arr['str'] = Redis::hget(config('rkey.testMsg.key'),'2017-05-31 14:54:50');
         $arr['item'] = json_decode($arr['str'],true);
         WxGetItem::updateSyncKey($arr['item']['body']['SyncKey']);
         dd($arr);
