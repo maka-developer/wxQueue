@@ -53,13 +53,13 @@ return [
             'engine' => null,
         ],
 
-        'pgsql' => [
-            'driver' => 'pgsql',
-            'host' => env('DB_HOST', '127.0.0.1'),
-            'port' => env('DB_PORT', '5432'),
-            'database' => env('DB_DATABASE', 'forge'),
-            'username' => env('DB_USERNAME', 'forge'),
-            'password' => env('DB_PASSWORD', ''),
+        'laravel_sys' => [
+            'driver' => 'laravel_sys',
+            'host' => env('DB_HOST_', '127.0.0.1'),
+            'port' => env('DB_PORT_', '5432'),
+            'database' => env('DB_DATABASE_', 'forge'),
+            'username' => env('DB_USERNAME_', 'forge'),
+            'password' => env('DB_PASSWORD_', ''),
             'charset' => 'utf8',
             'prefix' => '',
             'schema' => 'public',

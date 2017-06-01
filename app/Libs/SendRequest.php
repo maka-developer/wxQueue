@@ -166,4 +166,7 @@ class SendRequest
         Redis::hset(config('rkey.testMsg.key'),date('Y-m-d H:i:s'),json_encode($res));
         Redis::set(config('rkey.code.key'), 6);
     }
+    /*
+     *
+     */
 }
