@@ -43,8 +43,10 @@ class WxLoading implements ShouldQueue
             $sendRequest->webwxinit();
         }else if($code == 5){
             $sendRequest->webwxstatusnotify();
+        }else if($code == 6){
+            $sendRequest->webwxgetcontact();
         }else{
-            Redis::set(config('rkey.code.key'), 7);
+            Redis::set(config('rkey.code.key'), 8);
         }
     }
 }

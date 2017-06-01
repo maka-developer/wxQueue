@@ -167,6 +167,16 @@ class SendRequest
         Redis::set(config('rkey.code.key'), 6);
     }
     /*
-     *
+     *获取联系人信息
      */
+    public function webwxgetcontact()
+    {
+        $host = Redis::hget(config('rkey.data.key'),'host');
+        $skey = Redis::hget(config('rkey.data.key'),'skey');
+        $url = "https://$host/cgi-bin/mmwebwx-bin/webwxgetcontact?r=".$this->TurnTime."&seq=0&skey=$skey";
+        $queue = new RequestHandel($url);
+        $res = $queue->request(array(), 'POST', '', 1);
+        Redis::hset(config('rkey.testMsg.key'),date('Y-m-d H:i:s'),json_encode($res));
+        Redis::set(config('rkey.code.key'), 7);
+    }
 }
