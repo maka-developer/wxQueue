@@ -61,7 +61,7 @@ return [
             'driver' => 'redis',
             'connection' => 'default',
             'queue' => 'default',
-            'retry_after' => 1,
+            'retry_after' => 1,     //设置队列死掉重新执行的时间
         ],
 
     ],
