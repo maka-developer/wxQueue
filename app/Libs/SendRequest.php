@@ -112,7 +112,7 @@ class SendRequest
         $host = Redis::hget(config('rkey.data.key'),'host');
         $wxuin = Redis::hget(config('rkey.data.key'),'wxuin');
         $wxsid = Redis::hget(config('rkey.data.key'),'wxsid');
-//        $cookie = Redis::hget(config('rkey.data.key'),'cookie');
+//        $cookie = Redis::hget(config('rkey.data.key'),'cookie');          //不带cookie
         $url = "https://$host/cgi-bin/mmwebwx-bin/webwxinit?r=-".time()."&pass_ticket=$pass_ticket&lang=zh_CN";
         $queue = new RequestHandel($url);
         $post = [
