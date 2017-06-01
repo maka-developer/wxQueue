@@ -112,7 +112,7 @@ class SendRequest
         $host = Redis::hget(config('rkey.data.key'),'host');
         $wxuin = Redis::hget(config('rkey.data.key'),'wxuin');
         $wxsid = Redis::hget(config('rkey.data.key'),'wxsid');
-        $cookie = Redis::hget(config('rkey.data.key'),'cookie');
+//        $cookie = Redis::hget(config('rkey.data.key'),'cookie');
         $url = "https://$host/cgi-bin/mmwebwx-bin/webwxinit?r=-".time()."&pass_ticket=$pass_ticket&lang=zh_CN";
         $queue = new RequestHandel($url);
         $post = [
@@ -126,7 +126,7 @@ class SendRequest
         $arr['url'] = $url;
         $arr['post'] = $post;
         Redis::hset(config('rkey.errorMsg.key'), '请求数据：：'.date('Y-m-d H:i:s'),json_encode($arr));
-        $res = $queue->request($post, 'POST', $cookie, 1);
+        $res = $queue->request($post, 'POST', '', 1);
         if($res['body']['User']['Uin'] == $wxuin){      //获取正确数据
             Redis::set(config('rkey.code.key'), 5);
             Redis::hset(config('rkey.testMsg.key'),date('Y-m-d H:i:s'),json_encode($res));
