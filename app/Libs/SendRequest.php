@@ -172,9 +172,10 @@ class SendRequest
      */
     public function webwxgetcontact()
     {
+        $pass_ticket = Redis::hget(config('rkey.data.key'),'pass_ticket');
         $host = Redis::hget(config('rkey.data.key'),'host');
         $skey = Redis::hget(config('rkey.data.key'),'skey');
-        $url = "https://$host/cgi-bin/mmwebwx-bin/webwxgetcontact?r=".$this->TurnTime."&seq=0&skey=$skey";
+        $url = "https://$host/cgi-bin/mmwebwx-bin/webwxgetcontact?r=".$this->TurnTime."&seq=0&skey=$skey&pass_ticket=$pass_ticket&lang=zh_CN";
         $queue = new RequestHandel($url);
         $res = $queue->request(array(), 'POST', '', 1);
         Redis::hset(config('rkey.testMsg.key'),date('Y-m-d H:i:s'),json_encode($res));
