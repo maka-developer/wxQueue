@@ -137,4 +137,11 @@ class SendRequest
         }
         exit();
     }
+    /*
+     * 开启微信状态通知
+     */
+    public function webwxstatusnotify()
+    {
+
+    }
 }
