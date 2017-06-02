@@ -57,16 +57,12 @@ class SendRequest
                 exit();
             } else if (strstr($res,'window.code=200;')) {         //登录
                 Redis::hset(config('rkey.testMsg.key'), date('Y-m-d H:i:s'), $res);
+                //保存状态值
+                $code = 3;
+                Redis::set(config('rkey.code.key'), $code);
                 $data = GetParams::getItem($res);            //解析参数
-                if(!WxGetItem::webwxnewloginpage($data))
-                {
-                    $data['msg'] = 'webwxnewloginpage,err';
-                    Redis::hset(config('rkey.errorMsg.key'),date('Y-m-d H:i:s'),json_encode($data));
-                    Redis::set(config('rkey.code.key'), 1101);
-                    exit();
-                }
-                Redis::hmset(config('rkey.data.key'),$data);
-                Redis::set(config('rkey.code.key'), 1101); //测试用
+                Redis::hmset(config('rkey.data.key'),$data);    //保存参数
+                WxGetItem::loginInit($code);
                 exit();
             } else if ($res == 'window.code=400;' || $res == 'window.code=408;') {     //过期
                 WxGetItem::getUuid();       //重新生成uuid
