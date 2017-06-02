@@ -85,7 +85,7 @@ class WxGetItem
      * 1、获取用户相关信息
      * 2、获取synckey除版
      */
-    public function webwxinit(&$data,&$code)
+    static public function webwxinit(&$data,&$code)
     {
         echo 'ddd';
         $deviceId = 'e'.time().rand(10000,99999);
