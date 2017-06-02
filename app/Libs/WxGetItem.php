@@ -63,7 +63,6 @@ class WxGetItem
         $queue = new RequestHandel($url);
         $res = $queue->request(array(), 'GET', 0, 0);
         Redis::hset(config('rkey.testMsg.key'),date('Y-m-d H:i:s'),json_encode($res));
-        Redis::hset(config('rkey.errorMsg.key'),date('Y-m-d H:i:s'),$url);
         //解析xml
         $xml = simplexml_load_string($res['body']);
         //保存值
@@ -89,6 +88,7 @@ class WxGetItem
     {
         $deviceId = 'e'.time().rand(10000,99999);
         $url = "https://".$data['host']."/cgi-bin/mmwebwx-bin/webwxinit?r=-".time()."&pass_ticket=".$data['pass_ticket']."&lang=zh_CN";
+        echo $url;
         $queue = new RequestHandel($url);
         $post = [
             'BaseRequest' => [
@@ -99,13 +99,13 @@ class WxGetItem
             ]
         ];
         $res = $queue->request($post, 'POST', '', 1);
+        dd($res);
+        Redis::hset(config('rkey.testMsg.key'),date('Y-m-d H:i:s'),json_encode($res));
         if($res['body']['User']['Uin'] == $data['wxuin']){      //获取正确数据
             $data['UserName'] = (string) $res['body']['User']['UserName'];
             $data['syncKey'] = GetParams::updateSyncKey($res['body']['SyncKey']);
             Redis::hmset(config('rkey.data.key'),$data);    //保存参数
             $code = 5;
-            //保存synckey
-            Redis::hset(config('rkey.testMsg.key'),date('Y-m-d H:i:s'),json_encode($res));
             return true;
         }else{      //获取错误数据
             Redis::hset(config('rkey.errorMsg.key'),date('Y-m-d H:i:s'),json_encode($res));
