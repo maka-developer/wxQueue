@@ -209,6 +209,20 @@ class SendRequest
         $queue = new RequestHandel($url);
         $res = $queue->request(array(), 'GET', $cookie, 0, 'body');
         Redis::hset(config('rkey.testMsg.key'),date('Y-m-d H:i:s'),$res);
-        exit();
+        if(!strstr($res, 'retcode:"0"')){
+            /*
+             * 失败、退出微信
+             * 1、记录error数据
+             * 2、停止进程
+             */
+            Redis::hset(config('rkey.errorMsg.key'),date('Y-m-d H:i:s'),$res);
+        }else{                                    //正常返回，查看是否有新消息 （或进入/离开聊天界面？）
+            if(strstr($res, 'selector:"2"') !== false){     //有新消息
+                Redis::set(config('rkey.code.key'), 102);
+            } else if(strstr($res, 'selector:"7"') !== false) { //进入聊天界面
+                Redis::set(config('rkey.code.key'), 107);
+            }
+            exit();
+        }
     }
 }
