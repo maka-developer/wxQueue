@@ -58,8 +58,6 @@ class SendRequest
             } else if (strstr($res,'window.code=200;')) {         //登录
                 Redis::hset(config('rkey.testMsg.key'), date('Y-m-d H:i:s'), $res);
                 $data = GetParams::getItem($res);            //解析参数
-                Redis::set(config('rkey.code.key'), 1101);
-                exit();
                 if(!WxGetItem::webwxnewloginpage($data))
                 {
                     $data['msg'] = 'webwxnewloginpage,err';
