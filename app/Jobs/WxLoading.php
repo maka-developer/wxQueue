@@ -49,7 +49,7 @@ class WxLoading implements ShouldQueue
         }else if($code == 1101){    //预留退出
 
         }else{
-            
+
         }
     }
 }
