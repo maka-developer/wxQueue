@@ -78,10 +78,24 @@ class AdminController extends Controller
 //        $arr['xml'] = simplexml_load_string($arr['body']);
 //        $arr['message'] = (string)$arr['xml']->pass_ticket;
 
-        $arr['initstr'] = Redis::hget(config('rkey.testMsg.key'),'2017-06-02 10:09:23');
-        $arr['contectstr'] = Redis::hget(config('rkey.testMsg.key'),'2017-06-02 10:09:36');
-        $arr['init'] = json_decode($arr['initstr'],true);
-        $arr['contect'] = json_decode($arr['contectstr'],true);
+//        $arr['initstr'] = Redis::hget(config('rkey.testMsg.key'),'2017-06-02 10:09:23');
+//        $arr['contectstr'] = Redis::hget(config('rkey.testMsg.key'),'2017-06-02 10:09:36');
+//        $arr['init'] = json_decode($arr['initstr'],true);
+//        $arr['contect'] = json_decode($arr['contectstr'],true);
+        //redis hmset 测试
+        $insertArr = [
+            'cs1'=>'cs1',
+            'cs2'=>'cs2',
+            'cs3'=>'cs3'
+        ]  ;
+        $insertArr2 = [
+            'cs2'=>'ccss2',
+            'cs4'=>'cs4'
+        ];
+        Redis::hmset('ceshikey',$insertArr);
+        $arr['fir'] = Redis::hgetall('ceshikey');
+        Redis::hmset('ceshikey',$insertArr2);
+        $arr['sec'] = Redis::hgetall('ceshikey');
         dd($arr);
     }
 }
