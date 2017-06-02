@@ -105,11 +105,11 @@ class WxGetItem
                 'DeviceID' => $deviceId
             ]
         ];
-        $res = $queue->request($post, 'POST', '', 1);
+        $res = $queue->request($post, 'POST', '', 1 ,'body');
         $logArr['res'] = $res;
         $logArr['time'] = date('Y-m-d H:i:s');
         Redis::hset(config('rkey.log.key'), 'webwxinit'.rand(10000,99999),json_encode($logArr));
-        if($res['body']['User']['Uin'] == $data['wxuin']){      //获取正确数据
+        if($res['User']['Uin'] == $data['wxuin']){      //获取正确数据
             $data['UserName'] = (string) $res['body']['User']['UserName'];
             $data['syncKey'] = GetParams::updateSyncKey($res['body']['SyncKey']);
             Redis::hmset(config('rkey.data.key'),$data);    //保存参数
@@ -163,11 +163,11 @@ class WxGetItem
         $ClientMsgId = time().'000';
         $url = "https://".$data['host']."/cgi-bin/mmwebwx-bin/webwxgetcontact?r=$ClientMsgId&seq=0&skey=".$data['skey']."&pass_ticket=".$data['pass_ticket']."&lang=zh_CN";
         $queue = new RequestHandel($url);
-        $res = $queue->request(array(), 'POST', $data['cookie'], 1);
+        $res = $queue->request(array(), 'POST', $data['cookie'], 1, 'body');
         $logArr['res'] = $res;
         $logArr['time'] = date('Y-m-d H:i:s');
         Redis::hset(config('rkey.log.key'), 'webwxgetcontact'.rand(10000,99999),json_encode($logArr));
-        if($res['body']['BaseResponse']['Ret'] == 0){
+        if($res['BaseResponse']['Ret'] == 0){
             $code = 7;
             return true;
         }else{
