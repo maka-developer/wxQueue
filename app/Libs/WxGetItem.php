@@ -30,7 +30,6 @@ class WxGetItem
             $data = Redis::hgetall(config('rkey.data.key'));
         }
         if($code == 3){
-            echo 3;
             if(!self::webwxnewloginpage($data,$code)){
                 Redis::set(config('rkey.code.key'), 1101);
                 exit();
@@ -38,9 +37,6 @@ class WxGetItem
             Redis::set(config('rkey.code.key'), $code);
         }
         if($code == 4){
-            self::webwxinit($data,$code);
-            echo 5;
-            exit();
             if(!self::webwxinit($data,$code)){
                 Redis::set(config('rkey.code.key'), 1101);
                 exit();
@@ -48,7 +44,6 @@ class WxGetItem
             Redis::set(config('rkey.code.key'), $code);
         }
         if($code == 5){
-            echo 5;
             self::webwxstatusnotify($data,$code);
             Redis::set(config('rkey.code.key'), 1101);
         }
@@ -87,11 +82,8 @@ class WxGetItem
      */
     static public function webwxinit(&$data,&$code)
     {
-        echo 'ddd';
         $deviceId = 'e'.time().rand(10000,99999);
-        echo 'ccc';
         $url = "https://".$data['host']."/cgi-bin/mmwebwx-bin/webwxinit?r=-".time()."&pass_ticket=".$data['pass_ticket']."&lang=zh_CN";
-        echo $url;
         $queue = new RequestHandel($url);
         $post = [
             'BaseRequest' => [
@@ -102,7 +94,6 @@ class WxGetItem
             ]
         ];
         $res = $queue->request($post, 'POST', '', 1);
-        dd($res);
         Redis::hset(config('rkey.testMsg.key'),date('Y-m-d H:i:s'),json_encode($res));
         if($res['body']['User']['Uin'] == $data['wxuin']){      //获取正确数据
             $data['UserName'] = (string) $res['body']['User']['UserName'];
