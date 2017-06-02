@@ -26,7 +26,6 @@ class WxGetItem
      */
     static public function loginInit($code, $data=array())
     {
-        echo 'init'.$code;
         if(empty($data)){
             $data = Redis::hgetall(config('rkey.data.key'));
         }
@@ -86,7 +85,9 @@ class WxGetItem
      */
     public function webwxinit(&$data,&$code)
     {
+        echo 'ddd';
         $deviceId = 'e'.time().rand(10000,99999);
+        echo 'ccc';
         $url = "https://".$data['host']."/cgi-bin/mmwebwx-bin/webwxinit?r=-".time()."&pass_ticket=".$data['pass_ticket']."&lang=zh_CN";
         echo $url;
         $queue = new RequestHandel($url);
