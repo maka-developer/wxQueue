@@ -78,10 +78,11 @@ class AdminController extends Controller
 //        $arr['xml'] = simplexml_load_string($arr['body']);
 //        $arr['message'] = (string)$arr['xml']->pass_ticket;
 
-        $arr['str'] = Redis::hget(config('rkey.testMsg.key'),'2017-06-01 17:13:38');
-        $arr['item'] = json_decode($arr['str'],true);
-        $arr['MPSubscribeMsgList'] = $arr['item']['body']['MPSubscribeMsgList'];
-        WxGetItem::updateSyncKey($arr['item']['body']['SyncKey']);
+        $arr['initstr'] = Redis::hget(config('rkey.testMsg.key'),'2017-06-02 10:09:23');
+        $arr['contectstr'] = Redis::hget(config('rkey.testMsg.key'),'2017-06-02 10:09:36');
+        $arr['init'] = json_decode($arr['str'],true);
+        $arr['contect'] = json_decode($arr['contectstr'],true);
+        WxGetItem::updateSyncKey($arr['init']['body']['SyncKey']);
         dd($arr);
     }
 }

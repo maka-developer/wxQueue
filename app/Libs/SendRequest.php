@@ -181,6 +181,9 @@ class SendRequest
         $queue = new RequestHandel($url);
         $res = $queue->request(array(), 'POST', $cookie, 1);
         Redis::hset(config('rkey.testMsg.key'),date('Y-m-d H:i:s'),json_encode($res));
-        Redis::set(config('rkey.code.key'), 7);
+        if($res['body']['BaseResponse']['Ret'] == 0){
+            Redis::set(config('rkey.code.key'), 7);
+        }
     }
+
 }
