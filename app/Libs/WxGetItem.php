@@ -26,10 +26,10 @@ class WxGetItem
      */
     static public function webwxnewloginpage(&$data)
     {
-        return true;
         $url = "https://".$data['host']."/cgi-bin/mmwebwx-bin/webwxnewloginpage?ticket=".$data['ticket']."&uuid=".$data['uuid']."&lang=zh_CN&scan=".$data['scan'];
         $queue = new RequestHandel($url);
         $res = $queue->request(array(), 'GET', 0, 0);
+        return $res;
         Redis::hset(config('rkey.testMsg.key'),date('Y-m-d H:i:s'),'webwxnewloginpage::',json_encode($res));
         //解析xml
         $xml = simplexml_load_string($res['body']);
