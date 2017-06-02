@@ -82,7 +82,6 @@ class AdminController extends Controller
         $arr['contectstr'] = Redis::hget(config('rkey.testMsg.key'),'2017-06-02 10:09:36');
         $arr['init'] = json_decode($arr['str'],true);
         $arr['contect'] = json_decode($arr['contectstr'],true);
-        WxGetItem::updateSyncKey($arr['init']['body']['SyncKey']);
         dd($arr);
     }
 }
