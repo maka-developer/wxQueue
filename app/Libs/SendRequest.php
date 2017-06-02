@@ -169,6 +169,7 @@ class SendRequest
     }
     /*
      *获取联系人信息
+     * 1、处理联系人列表
      */
     public function webwxgetcontact()
     {
@@ -177,13 +178,36 @@ class SendRequest
         $skey = Redis::hget(config('rkey.data.key'),'skey');
         $cookie = Redis::hget(config('rkey.data.key'),'cookie');
         $url = "https://$host/cgi-bin/mmwebwx-bin/webwxgetcontact?r=".$this->TurnTime."&seq=0&skey=$skey&pass_ticket=$pass_ticket&lang=zh_CN";
-        Redis::hset(config('rkey.errorMsg.key'),date('Y-m-d H:i:s'),$url);
         $queue = new RequestHandel($url);
         $res = $queue->request(array(), 'POST', $cookie, 1);
         Redis::hset(config('rkey.testMsg.key'),date('Y-m-d H:i:s'),json_encode($res));
         if($res['body']['BaseResponse']['Ret'] == 0){
             Redis::set(config('rkey.code.key'), 7);
         }
+        exit();
     }
+    /*
+     * 获取群组信息
+     * 一次最多获取50条
+     */
+    public function webwxbatchgetcontact()
+    {
 
+    }
+    /*
+     *  同步刷新
+     */
+    public function synccheck()
+    {
+        $host = Redis::hget(config('rkey.data.key'),'host');
+        $skey = Redis::hget(config('rkey.data.key'),'skey');
+        $wxsid = Redis::hget(config('rkey.data.key'),'wxsid');
+        $wxuin = Redis::hget(config('rkey.data.key'),'wxuin');
+        $syncKey = Redis::hget(config('rkey.data.key'),'syncKey');
+        $url = "https://webpush.$host/cgi-bin/mmwebwx-bin/synccheck?r=".$this->TurnTime."&skey=$skey&sid=$wxsid&uin=$wxuin&deviceid=".$this->TrueRand."&synckey=$syncKey";
+        $queue = new RequestHandel($url);
+        $res = $queue->request(array(), 'GET', '', 1);
+        Redis::hset(config('rkey.testMsg.key'),date('Y-m-d H:i:s'),json_encode($res));
+        exit();
+    }
 }
