@@ -4,7 +4,7 @@ namespace app\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Jobs\WxLoading;
-use App\Libs\GetInput;
+use App\Libs\GetParams;
 use App\Libs\RequestHandel;
 use App\Libs\SendRequest;
 use App\Libs\WxGetItem;
@@ -83,19 +83,9 @@ class AdminController extends Controller
 //        $arr['init'] = json_decode($arr['initstr'],true);
 //        $arr['contect'] = json_decode($arr['contectstr'],true);
         //redis hmset 测试
-        $insertArr = [
-            'cs1'=>'cs1',
-            'cs2'=>'cs2',
-            'cs3'=>'cs3'
-        ]  ;
-        $insertArr2 = [
-            'cs2'=>'ccss2',
-            'cs4'=>'cs4'
-        ];
-        Redis::hmset('ceshikey',$insertArr);
-        $arr['fir'] = Redis::hgetall('ceshikey');
-        Redis::hmset('ceshikey',$insertArr2);
-        $arr['sec'] = Redis::hgetall('ceshikey');
+        $arr['res'] = Redis::hget(config('rkey.testMsg.key'),'2017-06-02 15:38:29');
+        $arr['data'] = GetParams::getItem($arr['res']);            //解析参数
+        $arr['bool'] = WxGetItem::webwxnewloginpage($arr['data']);
         dd($arr);
     }
 }
