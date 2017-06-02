@@ -37,6 +37,7 @@ class WxGetItem
             Redis::set(config('rkey.code.key'), $code);
         }
         if($code == 4){
+            echo 4;
             if(!self::webwxinit($data,$code)){
                 Redis::set(config('rkey.code.key'), 1101);
                 exit();
@@ -47,6 +48,7 @@ class WxGetItem
             self::webwxstatusnotify($data,$code);
             Redis::set(config('rkey.code.key'), 1101);
         }
+        exit();
     }
 
     /*
