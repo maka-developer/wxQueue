@@ -88,6 +88,7 @@ class AdminController extends Controller
 //        $arr['bool'] = WxGetItem::webwxnewloginpage($arr['data']);
 
         $code = Redis::get('rkey.code.key');
+        echo $code;
         WxGetItem::loginInit($code);
 //        dd($arr);
     }

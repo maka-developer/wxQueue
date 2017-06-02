@@ -26,10 +26,12 @@ class WxGetItem
      */
     static public function loginInit($code, $data=array())
     {
+        echo 'init'.$code;
         if(empty($data)){
             $data = Redis::hgetall(config('rkey.data.key'));
         }
         if($code == 3){
+            echo 3;
             if(!self::webwxnewloginpage($data,$code)){
                 Redis::set(config('rkey.code.key'), 1101);
                 exit();
@@ -45,6 +47,7 @@ class WxGetItem
             Redis::set(config('rkey.code.key'), $code);
         }
         if($code == 5){
+            echo 5;
             self::webwxstatusnotify($data,$code);
             Redis::set(config('rkey.code.key'), 1101);
         }
