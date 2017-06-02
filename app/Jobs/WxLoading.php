@@ -5,6 +5,7 @@
 namespace App\Jobs;
 
 use App\Libs\SendRequest;
+use App\Libs\WxGetItem;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
@@ -37,14 +38,8 @@ class WxLoading implements ShouldQueue
         $sendRequest = new SendRequest();
         if($code < 3) {
             $sendRequest->sendLogin($code);
-        }else if($code == 3){
-            $sendRequest->webwxnewloginpage();
-        }else if($code == 4){
-            $sendRequest->webwxinit();
-        }else if($code == 5){
-            $sendRequest->webwxstatusnotify();
-        }else if($code == 6){
-            $sendRequest->webwxgetcontact();
+        }else if($code >= 3 && $code <= 5){
+            WxGetItem::loginInit($code);
         }else if($code == 7){
             $sendRequest->synccheck();
         }else if($code == 102){

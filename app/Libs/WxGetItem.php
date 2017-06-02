@@ -31,10 +31,21 @@ class WxGetItem
         }
         if($code == 3){
             if(!self::webwxnewloginpage($data,$code)){
+                Redis::set(config('rkey.code.key'), 1101);
                 exit();
             }
-            Redis::hmset(config('rkey.data.key'),$data);    //保存参数
             Redis::set(config('rkey.code.key'), $code);
+        }
+        if($code == 4){
+            if(!self::webwxinit($data,$code)){
+                Redis::set(config('rkey.code.key'), 1101);
+                exit();
+            }
+            Redis::set(config('rkey.code.key'), $code);
+        }
+        if($code == 5){
+            self::webwxstatusnotify($data,$code);
+            Redis::set(config('rkey.code.key'), 1101);
         }
     }
 
@@ -51,16 +62,95 @@ class WxGetItem
         //解析xml
         $xml = simplexml_load_string($res['body']);
         //保存值
-        $data['skey'] = (string)$xml->skey;
-        $data['wxsid'] = (string)$xml->wxsid;
-        $data['wxuin'] = (string)$xml->wxuin;
-        $data['pass_ticket'] = (string)$xml->pass_ticket;
-        $data['cookie'] = (string)$xml->cookie;
         if((string)$xml->ret == '0'){
+            $data['skey'] = (string)$xml->skey;
+            $data['wxsid'] = (string)$xml->wxsid;
+            $data['wxuin'] = (string)$xml->wxuin;
+            $data['pass_ticket'] = (string)$xml->pass_ticket;
+            $data['cookie'] = $res['cookie'];
+            Redis::hmset(config('rkey.data.key'),$data);    //保存参数
             $code = 4;
             return true;
         }else{
             return false;
         }
+    }
+    /*
+     * 微信初始化
+     * 1、获取用户相关信息
+     * 2、获取synckey除版
+     */
+    public function webwxinit(&$data,&$code)
+    {
+        $deviceId = 'e'.time().rand(10000,99999);
+        $url = "https://".$data['host']."/cgi-bin/mmwebwx-bin/webwxinit?r=-".time()."&pass_ticket=".$data['pass_ticket']."&lang=zh_CN";
+        $queue = new RequestHandel($url);
+        $post = [
+            'BaseRequest' => [
+                'Uin' => $data['wxuin'],
+                'Sid' => $data['wxsid'],
+                'Skey' => $data['skey'],
+                'DeviceID' => $deviceId
+            ]
+        ];
+        $res = $queue->request($post, 'POST', '', 1);
+        if($res['body']['User']['Uin'] == $data['wxuin']){      //获取正确数据
+            $data['UserName'] = (string) $res['body']['User']['UserName'];
+            $data['syncKey'] = GetParams::updateSyncKey($res['body']['SyncKey']);
+            Redis::hmset(config('rkey.data.key'),$data);    //保存参数
+            $code = 5;
+            //保存synckey
+            Redis::hset(config('rkey.testMsg.key'),date('Y-m-d H:i:s'),json_encode($res));
+            return true;
+        }else{      //获取错误数据
+            Redis::hset(config('rkey.errorMsg.key'),date('Y-m-d H:i:s'),json_encode($res));
+            return false;
+        }
+    }
+
+    /*
+     * 开启微信状态通知
+     */
+    static public function webwxstatusnotify(&$data,&$code)
+    {
+        $deviceId = 'e'.time().rand(10000,99999);
+        $ClientMsgId = time().'000';
+        $url = "https://".$data['host']."/cgi-bin/mmwebwx-bin/webwxstatusnotify?pass_ticket=".$data['pass_ticket'];
+        $queue = new RequestHandel($url);
+        $post = [
+            'BaseRequest' => [
+                'Uin' => $data['wxuin'],
+                'Sid' => $data['wxsid'],
+                'Skey' => $data['skey'],
+                'DeviceID' => $deviceId
+            ],
+            'ClientMsgId'=>$ClientMsgId,
+            'Code' => 3,
+            'FromUserName' => $data['UserName'],
+            'ToUserName' => $data['UserName']
+        ];
+        $res = $queue->request($post, 'POST', '', 1, 'body');
+        $code = 6;
+        Redis::hset(config('rkey.testMsg.key'),date('Y-m-d H:i:s'),json_encode($res));
+        exit();
+    }
+    /*
+     *获取联系人信息
+     * 1、处理联系人列表
+     */
+    public function webwxgetcontact()
+    {
+        $pass_ticket = Redis::hget(config('rkey.data.key'),'pass_ticket');
+        $host = Redis::hget(config('rkey.data.key'),'host');
+        $skey = Redis::hget(config('rkey.data.key'),'skey');
+        $cookie = Redis::hget(config('rkey.data.key'),'cookie');
+        $url = "https://$host/cgi-bin/mmwebwx-bin/webwxgetcontact?r=".$this->TurnTime."&seq=0&skey=$skey&pass_ticket=$pass_ticket&lang=zh_CN";
+        $queue = new RequestHandel($url);
+        $res = $queue->request(array(), 'POST', $cookie, 1);
+        Redis::hset(config('rkey.testMsg.key'),date('Y-m-d H:i:s'),json_encode($res));
+        if($res['body']['BaseResponse']['Ret'] == 0){
+            Redis::set(config('rkey.code.key'), 7);
+        }
+        exit();
     }
 }
