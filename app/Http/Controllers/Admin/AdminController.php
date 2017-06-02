@@ -83,9 +83,12 @@ class AdminController extends Controller
 //        $arr['init'] = json_decode($arr['initstr'],true);
 //        $arr['contect'] = json_decode($arr['contectstr'],true);
         //redis hmset 测试
-        $arr['res'] = Redis::hget(config('rkey.testMsg.key'),'2017-06-02 16:19:17');
-        $arr['data'] = GetParams::getItem($arr['res']);            //解析参数
-        $arr['bool'] = WxGetItem::webwxnewloginpage($arr['data']);
-        dd($arr);
+//        $arr['res'] = Redis::hget(config('rkey.testMsg.key'),'2017-06-02 16:19:17');
+//        $arr['data'] = GetParams::getItem($arr['res']);            //解析参数
+//        $arr['bool'] = WxGetItem::webwxnewloginpage($arr['data']);
+
+        $code = Redis::get('rkey.code.key');
+        WxGetItem::loginInit($code);
+//        dd($arr);
     }
 }
