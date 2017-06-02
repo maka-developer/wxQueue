@@ -207,7 +207,7 @@ class SendRequest
         $url = "https://webpush.$host/cgi-bin/mmwebwx-bin/synccheck?r=".$this->TurnTime."&skey=$skey&sid=$wxsid&uin=$wxuin&deviceid=".$this->TrueRand."&synckey=$syncKey";
         Redis::hset(config('rkey.errorMsg.key'),date('Y-m-d H:i:s'),$url);
         $queue = new RequestHandel($url);
-        $res = $queue->request(array(), 'GET', '', 1);
+        $res = $queue->request(array(), 'GET', '', 0);
         Redis::hset(config('rkey.testMsg.key'),date('Y-m-d H:i:s'),json_encode($res));
         exit();
     }
