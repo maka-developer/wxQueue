@@ -83,7 +83,7 @@ class AdminController extends Controller
 //        $arr['init'] = json_decode($arr['initstr'],true);
 //        $arr['contect'] = json_decode($arr['contectstr'],true);
         //redis hmset 测试
-        $arr['res'] = Redis::hget(config('rkey.testMsg.key'),'2017-06-02 15:38:29');
+        $arr['res'] = Redis::hget(config('rkey.testMsg.key'),'2017-06-02 16:16:22');
         $arr['data'] = GetParams::getItem($arr['res']);            //解析参数
         $arr['bool'] = WxGetItem::webwxnewloginpage($arr['data']);
         dd($arr);
