@@ -9,10 +9,6 @@ use Illuminate\Support\Facades\Redis;
 class WxGetItem
 {
 
-    public function __construct()
-    {
-
-    }
     //获取uuid并存入redis
     static public function getUuid()
     {
@@ -25,22 +21,27 @@ class WxGetItem
         Redis::set(config('rkey.code.key'), 0);
     }
 
-    //更新synckey
-    static public function updateSyncKey($arr)
+    /*
+     *  loginPage 获取用户相关数据
+     */
+    static public function webwxnewloginpage(&$data)
     {
-        if($arr === false || empty($arr)){
-            Redis::hset(config('rkey.errorMsg.key'),date('Y-m-d H:i:s'),'err synckey::'.json_encode($arr));
+        $url = "https://".$data['host']."/cgi-bin/mmwebwx-bin/webwxnewloginpage?ticket=".$data['ticket']."&uuid=".$data['uuid']."&lang=zh_CN&scan=".$data['scan'];
+        $queue = new RequestHandel($url);
+        $res = $queue->request(array(), 'GET', 0, 0);
+        Redis::hset(config('rkey.testMsg.key'),date('Y-m-d H:i:s'),'webwxnewloginpage::',json_encode($res));
+        //解析xml
+        $xml = simplexml_load_string($res['body']);
+        //保存值
+        $data['skey'] = (string)$xml->skey;
+        $data['wxsid'] = (string)$xml->wxsid;
+        $data['wxuin'] = (string)$xml->wxuin;
+        $data['pass_ticket'] = (string)$xml->pass_ticket;
+        $data['cookie'] = (string)$xml->cookie;
+        if((string)$xml->ret == '0'){
+            return true;
+        }else{
+            return false;
         }
-        $count = $arr['Count'];
-        $resStr = '';
-        for($i=0; $i<$count; $i++){
-            $listArr = $arr['List'][$i];
-            if($i == $count - 1){
-                $resStr .= $listArr['Key'].'_'.$listArr['Val'];
-            }else{
-                $resStr .= $listArr['Key'].'_'.$listArr['Val'].'|';
-            }
-        }
-        Redis::hset(config('rkey.data.key'),'syncKey',$resStr);
     }
 }

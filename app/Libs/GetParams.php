@@ -1,13 +1,16 @@
 <?php
-/*
- *  获取链接中参数
+/**
+ * 辅助类，提取参数
+ * Date: 2017/6/2
+ * Time: 14:41
  */
-
 namespace App\Libs;
 
-class GetInput
+use Illuminate\Support\Facades\Redis;
+
+class GetParams
 {
-    //解析参数
+    //获取传入url中的参数  带host
     static public function getItem($data)
     {
         preg_match_all('#"(.*?)"#i', $data, $matches);
@@ -40,5 +43,24 @@ class GetInput
             $resArr[$resKey] = $resValue;
         }
         return $resArr;
+    }
+
+    //更新synckey 组合synckey字符串
+    static public function updateSyncKey($arr)
+    {
+        if($arr === false || empty($arr)){
+            return false;
+        }
+        $count = $arr['Count'];
+        $resStr = '';
+        for($i=0; $i<$count; $i++){
+            $listArr = $arr['List'][$i];
+            if($i == $count - 1){
+                $resStr .= $listArr['Key'].'_'.$listArr['Val'];
+            }else{
+                $resStr .= $listArr['Key'].'_'.$listArr['Val'].'|';
+            }
+        }
+        return $resStr;
     }
 }

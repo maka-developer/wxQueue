@@ -51,6 +51,8 @@ class WxLoading implements ShouldQueue
             Redis::set(config('rkey.code.key'), 8);
         }else if($code == 107){
             Redis::set(config('rkey.code.key'), 9);
+        }else if($code == 1101){    //预留退出
+
         }
     }
 }

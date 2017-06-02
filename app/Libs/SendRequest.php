@@ -4,7 +4,7 @@
  */
 namespace App\Libs;
 
-use App\Libs\WxGetItem;
+use App\Libs\GetParams;
 use Illuminate\Support\Facades\Redis;
 
 class SendRequest
@@ -57,12 +57,16 @@ class SendRequest
                 exit();
             } else if (strstr($res,'window.code=200;')) {         //登录
                 Redis::hset(config('rkey.testMsg.key'), date('Y-m-d H:i:s'), $res);
-                Redis::set(config('rkey.code.key'), 3);
-                $data = GetInput::getItem($res);            //解析参数
-                Redis::hset(config('rkey.data.key'),'ticket',$data['ticket']);
-                Redis::hset(config('rkey.data.key'),'scan',$data['scan']);
-                Redis::hset(config('rkey.data.key'),'host',$data['host']);  //域名地址
-                Redis::set(config('rkey.uuid.key'), $data['uuid']);
+                $data = GetParams::getItem($res);            //解析参数
+                if(!WxGetItem::webwxnewloginpage($data))
+                {
+                    $data['msg'] = 'webwxnewloginpage,err';
+                    Redis::hset(config('rkey.errorMsg.key'),date('Y-m-d H:i:s'),json_encode($data));
+                    Redis::set(config('rkey.code.key'), 1101);
+                    exit();
+                }
+                Redis::hmset(config('rkey.data.key'),$data);
+                Redis::set(config('rkey.code.key'), 1101); //测试用
                 exit();
             } else if ($res == 'window.code=400;' || $res == 'window.code=408;') {     //过期
                 WxGetItem::getUuid();       //重新生成uuid
