@@ -44,8 +44,18 @@ class WxGetItem
             Redis::set(config('rkey.code.key'), $code);
         }
         if($code == 5){
-            self::webwxstatusnotify($data,$code);
-            Redis::set(config('rkey.code.key'), 1101);
+            if(!self::webwxstatusnotify($data,$code)){
+                Redis::set(config('rkey.code.key'), 1101);
+                exit();
+            }
+            Redis::set(config('rkey.code.key'), $code);
+        }
+        if($code == 6){
+            if(!self::webwxgetcontact($data,$code)){
+                Redis::set(config('rkey.code.key'), 1101);
+                exit();
+            }
+            Redis::set(config('rkey.code.key'), $code);
         }
         exit();
     }
@@ -58,7 +68,9 @@ class WxGetItem
         $url = "https://".$data['host']."/cgi-bin/mmwebwx-bin/webwxnewloginpage?ticket=".$data['ticket']."&uuid=".$data['uuid']."&lang=zh_CN&scan=".$data['scan'];
         $queue = new RequestHandel($url);
         $res = $queue->request(array(), 'GET', 0, 0);
-        Redis::hset(config('rkey.testMsg.key'),date('Y-m-d H:i:s'),json_encode($res));
+        $logArr['res'] = $res;
+        $logArr['time'] = date('Y-m-d H:i:s');
+        Redis::hset(config('rkey.log.key'), 'loginPage'.rand(10000,99999),json_encode($logArr));
         //解析xml
         $xml = simplexml_load_string($res['body']);
         //保存值
@@ -94,7 +106,9 @@ class WxGetItem
             ]
         ];
         $res = $queue->request($post, 'POST', '', 1);
-        Redis::hset(config('rkey.testMsg.key'),date('Y-m-d H:i:s'),json_encode($res));
+        $logArr['res'] = $res;
+        $logArr['time'] = date('Y-m-d H:i:s');
+        Redis::hset(config('rkey.log.key'), 'loginPage'.rand(10000,99999),json_encode($logArr));
         if($res['body']['User']['Uin'] == $data['wxuin']){      //获取正确数据
             $data['UserName'] = (string) $res['body']['User']['UserName'];
             $data['syncKey'] = GetParams::updateSyncKey($res['body']['SyncKey']);
@@ -129,27 +143,36 @@ class WxGetItem
             'ToUserName' => $data['UserName']
         ];
         $res = $queue->request($post, 'POST', '', 1, 'body');
-        $code = 6;
-        Redis::hset(config('rkey.testMsg.key'),date('Y-m-d H:i:s'),json_encode($res));
-        exit();
+        $logArr['res'] = $res;
+        $logArr['time'] = date('Y-m-d H:i:s');
+        Redis::hset(config('rkey.log.key'), 'loginPage'.rand(10000,99999),json_encode($logArr));
+        if($res['BaseResponse']['Ret'] == 0){
+            $code = 6;
+            return true;
+        }else{
+            Redis::hset(config('rkey.errorMsg.key'),date('Y-m-d H:i:s'),json_encode($res));
+            return false;
+        }
     }
     /*
      *获取联系人信息
      * 1、处理联系人列表
      */
-    public function webwxgetcontact()
+    static public function webwxgetcontact(&$data,&$code)
     {
-        $pass_ticket = Redis::hget(config('rkey.data.key'),'pass_ticket');
-        $host = Redis::hget(config('rkey.data.key'),'host');
-        $skey = Redis::hget(config('rkey.data.key'),'skey');
-        $cookie = Redis::hget(config('rkey.data.key'),'cookie');
-        $url = "https://$host/cgi-bin/mmwebwx-bin/webwxgetcontact?r=".$this->TurnTime."&seq=0&skey=$skey&pass_ticket=$pass_ticket&lang=zh_CN";
+        $ClientMsgId = time().'000';
+        $url = "https://".$data['host']."/cgi-bin/mmwebwx-bin/webwxgetcontact?r=$ClientMsgId&seq=0&skey=".$data['skey']."&pass_ticket=".$data['pass_ticket']."&lang=zh_CN";
         $queue = new RequestHandel($url);
-        $res = $queue->request(array(), 'POST', $cookie, 1);
-        Redis::hset(config('rkey.testMsg.key'),date('Y-m-d H:i:s'),json_encode($res));
+        $res = $queue->request(array(), 'POST', $data['cookie'], 1);
+        $logArr['res'] = $res;
+        $logArr['time'] = date('Y-m-d H:i:s');
+        Redis::hset(config('rkey.log.key'), 'loginPage'.rand(10000,99999),json_encode($logArr));
         if($res['body']['BaseResponse']['Ret'] == 0){
-            Redis::set(config('rkey.code.key'), 7);
+            $code = 7;
+            return true;
+        }else{
+            Redis::hset(config('rkey.errorMsg.key'),date('Y-m-d H:i:s'),json_encode($res));
+            return false;
         }
-        exit();
     }
 }

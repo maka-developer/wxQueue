@@ -38,7 +38,7 @@ class WxLoading implements ShouldQueue
         $sendRequest = new SendRequest();
         if($code < 3) {
             $sendRequest->sendLogin($code);
-        }else if($code >= 3 && $code <= 5){
+        }else if($code >= 3 && $code <= 6){
             WxGetItem::loginInit($code);
         }else if($code == 7){
             $sendRequest->synccheck();
@@ -48,6 +48,8 @@ class WxLoading implements ShouldQueue
             Redis::set(config('rkey.code.key'), 9);
         }else if($code == 1101){    //预留退出
 
+        }else{
+            
         }
     }
 }
