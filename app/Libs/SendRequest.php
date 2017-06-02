@@ -175,10 +175,11 @@ class SendRequest
         $pass_ticket = Redis::hget(config('rkey.data.key'),'pass_ticket');
         $host = Redis::hget(config('rkey.data.key'),'host');
         $skey = Redis::hget(config('rkey.data.key'),'skey');
+        $cookie = Redis::hget(config('rkey.data.key'),'cookie');
         $url = "https://$host/cgi-bin/mmwebwx-bin/webwxgetcontact?r=".$this->TurnTime."&seq=0&skey=$skey&pass_ticket=$pass_ticket&lang=zh_CN";
         Redis::hset(config('rkey.errorMsg.key'),date('Y-m-d H:i:s'),$url);
         $queue = new RequestHandel($url);
-        $res = $queue->request(array(), 'POST', '', 1);
+        $res = $queue->request(array(), 'POST', $cookie, 1);
         Redis::hset(config('rkey.testMsg.key'),date('Y-m-d H:i:s'),json_encode($res));
         Redis::set(config('rkey.code.key'), 7);
     }
