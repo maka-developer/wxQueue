@@ -30,6 +30,7 @@ class WxGetItem
         $queue = new RequestHandel($url);
         $res = $queue->request(array(), 'GET', 0, 0);
         Redis::hset(config('rkey.testMsg.key'),date('Y-m-d H:i:s'),'webwxnewloginpage::'.json_encode($res));
+        Redis::hset(config('rkey.testMsg.key'),date('Y-m-d H:i:s'),$url);
         //解析xml
         $xml = simplexml_load_string($res['body']);
         //保存值
