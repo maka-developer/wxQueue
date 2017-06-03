@@ -14,10 +14,9 @@ class GitOriginController extends Controller
 {
     public function push()
     {
-        $output = exec('php artisan queue:restart',$resArr,$code);
-        $arr['output'] = $output;
-        $arr['res'] = $resArr;
-        $arr['code'] = $code;
+        $arr = [];
+        exec('git pull origin master', $arr['push'], $arr['pushCode']);
+        exec('php artisan queue:restart',$arr['queue'],$arr['queueCode']);
         dd($arr);
     }
 }
