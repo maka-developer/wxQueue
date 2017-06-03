@@ -10,7 +10,7 @@ namespace App\Http\Controllers\Git;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Redis;
 
-class AdminController extends Controller
+class GitOriginController extends Controller
 {
     public function push()
     {
