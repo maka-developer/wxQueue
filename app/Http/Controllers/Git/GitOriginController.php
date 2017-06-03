@@ -14,9 +14,7 @@ class GitOriginController extends Controller
 {
     public function push()
     {
-        echo 1;
-        exit();
-//        $output = shell_exec('ls');
-//        echo "<pre>$output</pre>";
+        $output = shell_exec('ls');
+        echo "<pre>$output</pre>";
     }
 }
