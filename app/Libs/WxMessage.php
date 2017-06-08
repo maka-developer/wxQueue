@@ -29,7 +29,7 @@ class WxMessage
             'rr' => time()
         ];
         $queue = new RequestHandel($url);
-        $res = $queue->request($post, 'POST', '', 1);
+        $res = $queue->request($post, 'POST', $data['cookie'], 1);
         Redis::hset(config('rkey.log.key'),'getMsg'.rand(1000,9999),json_encode($res));
         Redis::set(config('rkey.code.key'), 1102);
     }
