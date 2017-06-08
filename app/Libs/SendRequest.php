@@ -91,15 +91,10 @@ class SendRequest
      */
     public function synccheck()
     {
-        $host = Redis::hget(config('rkey.data.key'),'host');
-        $skey = Redis::hget(config('rkey.data.key'),'skey');
-        $wxsid = Redis::hget(config('rkey.data.key'),'wxsid');
-        $wxuin = Redis::hget(config('rkey.data.key'),'wxuin');
-        $syncKey = Redis::hget(config('rkey.data.key'),'syncKey');
-        $cookie = Redis::hget(config('rkey.data.key'),'cookie');
-        $url = "https://webpush.$host/cgi-bin/mmwebwx-bin/synccheck?r=".$this->TurnTime."&skey=$skey&sid=$wxsid&uin=$wxuin&deviceid=".$this->TrueRand."&synckey=$syncKey";
+        $data = Redis::hgetall(config('rkey.data.key'));
+        $url = "https://webpush.".$data['host']."/cgi-bin/mmwebwx-bin/synccheck?r=".$this->TurnTime."&skey=".$data['skey']."&sid=".$data['wxsid']."&uin=".$data['wxuin']."&deviceid=".$this->TrueRand."&synckey=".$data['syncKeyStr'];
         $queue = new RequestHandel($url);
-        $res = $queue->request(array(), 'GET', $cookie, 0, 'body');
+        $res = $queue->request(array(), 'GET', $data['cookie'], 0, 'body');
         Redis::hset(config('rkey.testMsg.key'),date('Y-m-d H:i:s'),$res);
         if(!strstr($res, 'retcode:"0"')){
             /*
@@ -108,6 +103,7 @@ class SendRequest
              * 2、停止进程
              */
             Redis::hset(config('rkey.errorMsg.key'),date('Y-m-d H:i:s'),$res);
+            Redis::set(config('rkey.code.key'), 1101);
         }else{                                    //正常返回，查看是否有新消息 （或进入/离开聊天界面？）
             if(strstr($res, 'selector:"2"') !== false){     //有新消息
                 Redis::set(config('rkey.code.key'), 102);

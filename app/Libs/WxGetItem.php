@@ -111,7 +111,8 @@ class WxGetItem
         Redis::hset(config('rkey.log.key'), 'webwxinit',json_encode($logArr));
         if($res['body']['User']['Uin'] == $data['wxuin']){      //获取正确数据
             $data['UserName'] = (string) $res['body']['User']['UserName'];
-            $data['syncKey'] = GetParams::updateSyncKey($res['body']['SyncKey']);
+            $data['syncKeyStr'] = GetParams::updateSyncKey($res['body']['SyncKey']);
+            $data['syncKey'] = $res['body']['SyncKey'];
             Redis::hmset(config('rkey.data.key'),$data);    //保存参数
             $code = 5;
             return true;
