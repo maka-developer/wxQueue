@@ -7,6 +7,7 @@
 namespace App\Libs;
 
 use Illuminate\Support\Facades\Redis;
+use App\Libs\GetParams;
 
 class WxMessage
 {
@@ -36,6 +37,12 @@ class WxMessage
         }else{
             Redis::hset(config('rkey.msgs.key'),date('Y-m-d H:i:s'),json_encode($res));
             Redis::set(config('rkey.code.key'), 7);
+            //1、更新synckey
+            unset($data);
+            $data['syncKey'] = json_encode($res['body']['SyncKey']);
+            $data['syncKeyStr'] = GetParams::updateSyncKey($res['body']['SyncKey']);
+            Redis::hmset(config('rkey.data.key'),$data);    //保存参数
         }
+        exit();
     }
 }
