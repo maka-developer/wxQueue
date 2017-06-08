@@ -25,7 +25,12 @@ class WxMessage
                 'Skey' => $data['skey'],
                 'Uin' => $data['wxuin']
             ],
-            'SyncKey' => $data['']
+            'SyncKey' => json_decode($data['syncKey'],true),
+            'rr' => time()
         ];
+        $queue = new RequestHandel($url);
+        $res = $queue->request($post, 'POST', '', 1);
+        Redis::hset(config('rkey.log.key'),'getMsg'.rand(1000,9999),json_encode($res));
+        Redis::set(config('rkey.code.key'), 1102);
     }
 }

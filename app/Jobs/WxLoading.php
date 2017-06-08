@@ -6,6 +6,7 @@ namespace App\Jobs;
 
 use App\Libs\SendRequest;
 use App\Libs\WxGetItem;
+use App\Libs\WxMessage;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
@@ -43,7 +44,7 @@ class WxLoading implements ShouldQueue
         }else if($code == 7){
             $sendRequest->synccheck();
         }else if($code == 102){
-            Redis::set(config('rkey.code.key'), 8);
+            WxMessage::getMessage();
         }else if($code == 107){
             Redis::set(config('rkey.code.key'), 9);
         }else if($code == 1101){    //预留退出
