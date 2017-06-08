@@ -63,7 +63,7 @@ class AdminController extends Controller
             $arr['log'][$key] = json_decode($value,true);
         }
         foreach($msg as $key=>$value){
-            $arr['msgs']['key'] = json_decode($value,true);
+            $arr['msgs'][$key] = json_decode($value,true);
         }
 
         $arr['url'] = 'https://login.weixin.qq.com/qrcode/'.$uuid;
