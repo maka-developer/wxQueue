@@ -92,7 +92,7 @@ class SendRequest
     public function synccheck()
     {
         $data = Redis::hgetall(config('rkey.data.key'));
-        $url = "https://webpush.".$data['host']."/cgi-bin/mmwebwx-bin/synccheck?r=".$this->TurnTime."&skey=".$data['skey']."&sid=".$data['wxsid']."&uin=".$data['wxuin']."&deviceid=".$this->TrueRand."&synckey=".$data['syncKeyStr'];
+        $url = "https://webpush.".$data['host']."/cgi-bin/mmwebwx-bin/synccheck?r=".$this->TurnTime."&skey=".$data['skey']."&sid=".$data['wxsid']."&uin=".$data['wxuin']."&deviceid=".$this->TrueRand."&synckey=".$data['syncKeyStr']."_=".time().rand(100,999);
         $queue = new RequestHandel($url);
         $res = $queue->request(array(), 'GET', $data['cookie'], 0, 'body');
         Redis::hset(config('rkey.testMsg.key'),date('Y-m-d H:i:s'),$res);
@@ -102,7 +102,9 @@ class SendRequest
              * 1、记录error数据
              * 2、停止进程
              */
-            Redis::hset(config('rkey.errorMsg.key'),date('Y-m-d H:i:s'),$res);
+            $resArr['res'] = $res;
+            $resArr['url'] = $url;
+            Redis::hset(config('rkey.errorMsg.key'),date('Y-m-d H:i:s'),json_encode($resArr));
             Redis::set(config('rkey.code.key'), 1101);
         }else{                                    //正常返回，查看是否有新消息 （或进入/离开聊天界面？）
             if(strstr($res, 'selector:"2"') !== false){     //有新消息

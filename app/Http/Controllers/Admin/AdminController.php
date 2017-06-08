@@ -95,7 +95,7 @@ class AdminController extends Controller
 //        $arr['res'] = Redis::hget(config('rkey.testMsg.key'),'2017-06-02 16:19:17');
 //        $arr['data'] = GetParams::getItem($arr['res']);            //解析参数
 //        $arr['bool'] = WxGetItem::webwxnewloginpage($arr['data']);
-        WxMessage::getMessage();
+//        WxMessage::getMessage();
 //        dd($arr);
     }
 }
