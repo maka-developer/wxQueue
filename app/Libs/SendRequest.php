@@ -109,8 +109,8 @@ class SendRequest
         }else{                                    //正常返回，查看是否有新消息 （或进入/离开聊天界面？）
             if(strstr($res, 'selector:"2"') !== false){     //有新消息
                 Redis::set(config('rkey.code.key'), 102);
-            } else if(strstr($res, 'selector:"7"') !== false) { //进入聊天界面
-                Redis::set(config('rkey.code.key'), 107);
+            } else if(strstr($res, 'selector:"7"') !== false) { //进入聊天界面  暂时使用102 
+                Redis::set(config('rkey.code.key'), 102);
             }
             exit();
         }
