@@ -68,9 +68,16 @@ class GetParams
     static public function mergeCookie($cookie)
     {
         $rCookie = Redis::hget(config('rkey.data.key'),'cookie');
-        $res['rcookie'] = self::split($rCookie);
-        $res['cookie'] = self::split($cookie);
-        return $res;
+        $rCookieArr = self::split($rCookie);
+        $cookieArr = self::split($cookie);
+        foreach($cookieArr as $key=>$value){    //替换
+            $rCookieArr[$key] = $value;
+        }
+        $cookieStr = '';
+        foreach($rCookieArr as $key=>$value){
+            $cookieStr .= $key."=".$value.';';
+        }
+        return $cookieStr;
     }
 
     //拆解cookie
