@@ -30,6 +30,12 @@ return [
         'ins'=>'日志'
     ],
 
+    'msgs'=>[
+        'key'=>'wx::msg',
+        'type'=>'hash',
+        'ins'=>'消息记录'
+    ],
+
     'testMsg'=>[
         'key'=>'wx::testMsg',
         'type'=>'散列',
