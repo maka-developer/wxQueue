@@ -112,7 +112,7 @@ class WxGetItem
         if($res['body']['User']['Uin'] == $data['wxuin']){      //获取正确数据
             $data['UserName'] = (string) $res['body']['User']['UserName'];
             $data['syncKeyStr'] = GetParams::updateSyncKey($res['body']['SyncKey']);
-            $data['syncKey'] = $res['body']['SyncKey'];
+            $data['syncKey'] = json_encode($res['body']['SyncKey']);
             Redis::hmset(config('rkey.data.key'),$data);    //保存参数
             $code = 5;
             return true;

@@ -25,7 +25,7 @@ class WxMessage
                 'Skey' => $data['skey'],
                 'Uin' => $data['wxuin']
             ],
-
+            'SyncKey' => $data['']
         ];
     }
 }
