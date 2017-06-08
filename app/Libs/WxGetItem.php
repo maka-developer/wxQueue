@@ -70,7 +70,7 @@ class WxGetItem
         $res = $queue->request(array(), 'GET', 0, 0);
         $logArr['res'] = $res;
         $logArr['time'] = date('Y-m-d H:i:s');
-        Redis::hset(config('rkey.log.key'), 'loginPage'.rand(10000,99999),json_encode($logArr));
+        Redis::hset(config('rkey.log.key'), 'loginPage',json_encode($logArr));
         //解析xml
         $xml = simplexml_load_string($res['body']);
         //保存值
@@ -108,7 +108,7 @@ class WxGetItem
         $res = $queue->request($post, 'POST', '', 1);
         $logArr['res'] = $res;
         $logArr['time'] = date('Y-m-d H:i:s');
-        Redis::hset(config('rkey.log.key'), 'webwxinit'.rand(10000,99999),json_encode($logArr));
+        Redis::hset(config('rkey.log.key'), 'webwxinit',json_encode($logArr));
         if($res['body']['User']['Uin'] == $data['wxuin']){      //获取正确数据
             $data['UserName'] = (string) $res['body']['User']['UserName'];
             $data['syncKey'] = GetParams::updateSyncKey($res['body']['SyncKey']);
@@ -145,7 +145,7 @@ class WxGetItem
         $res = $queue->request($post, 'POST', '', 1, 'body');
         $logArr['res'] = $res;
         $logArr['time'] = date('Y-m-d H:i:s');
-        Redis::hset(config('rkey.log.key'), 'webwxstatusnotify'.rand(10000,99999),json_encode($logArr));
+        Redis::hset(config('rkey.log.key'), 'webwxstatusnotify',json_encode($logArr));
         if($res['BaseResponse']['Ret'] == 0){
             $code = 6;
             return true;
@@ -166,7 +166,7 @@ class WxGetItem
         $res = $queue->request(array(), 'POST', $data['cookie'], 1);
         $logArr['res'] = $res;
         $logArr['time'] = date('Y-m-d H:i:s');
-        Redis::hset(config('rkey.log.key'), 'webwxgetcontact'.rand(10000,99999),json_encode($logArr));
+        Redis::hset(config('rkey.log.key'), 'webwxgetcontact',json_encode($logArr));
         if($res['body']['BaseResponse']['Ret'] == 0){
             $code = 7;
             return true;
@@ -174,5 +174,13 @@ class WxGetItem
             Redis::hset(config('rkey.errorMsg.key'),date('Y-m-d H:i:s'),json_encode($res));
             return false;
         }
+    }
+    /*
+    * 获取群组信息
+    * 一次最多获取50条
+    */
+    public function webwxbatchgetcontact()
+    {
+
     }
 }
