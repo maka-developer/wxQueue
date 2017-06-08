@@ -95,8 +95,9 @@ class SendRequest
         $url = "https://webpush.".$data['host']."/cgi-bin/mmwebwx-bin/synccheck?r=".$this->TurnTime."&skey=".$data['skey']."&sid=".$data['wxsid']."&uin=".$data['wxuin']."&deviceid=".$this->TrueRand."&synckey=".$data['syncKeyStr']."_=".time().rand(100,999);
         $queue = new RequestHandel($url);
         $res = $queue->request(array(), 'GET', $data['cookie'], 0, 'body');
-        Redis::hset(config('rkey.testMsg.key'),date('Y-m-d H:i:s'),$res);
-        Redis::hset(config('rkey.log.key'),'check'.date('Y-m-d H:i:s'),$url);
+        $resArr['res'] = $res;
+        $resArr['url'] = $url;
+        Redis::hset(config('rkey.testMsg.key'),date('Y-m-d H:i:s'),json_encode($resArr));
         if(!strstr($res, 'retcode:"0"')){
             /*
              * 失败、退出微信
