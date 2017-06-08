@@ -101,7 +101,7 @@ class AdminController extends Controller
         $res['msg1'] = json_decode($data['msg2017-06-08 17:09:01'],true);
         $res['msg2'] = json_decode($data['msg2017-06-08 17:09:08'],true);
         foreach($res as $key=>$value){
-            $res['key'] = $value['res']['body'];
+            $res[$key] = $value['res']['body'];
         };
         dd($res);
     }
