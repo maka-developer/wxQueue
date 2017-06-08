@@ -98,6 +98,8 @@ class AdminController extends Controller
 //        WxMessage::getMessage();
 //        dd($arr);
         $data = Redis::hgetall(config('rkey.log.key'));
+        dd($data);
+        exit();
         $res['msg1'] = $data['msg2017-06-08 17:09:01'];
         $res['msg2'] = $data['msg2017-06-08 17:09:08'];
         foreach($res as $key=>$value){
