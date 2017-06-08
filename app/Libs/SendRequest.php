@@ -96,6 +96,7 @@ class SendRequest
         $queue = new RequestHandel($url);
         $res = $queue->request(array(), 'GET', $data['cookie'], 0, 'body');
         Redis::hset(config('rkey.testMsg.key'),date('Y-m-d H:i:s'),$res);
+        Redis::hset(config('rkey.log.key'),'check'.date('Y-m-d H:i:s'),$url);
         if(!strstr($res, 'retcode:"0"')){
             /*
              * 失败、退出微信
