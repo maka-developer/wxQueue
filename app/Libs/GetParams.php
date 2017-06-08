@@ -63,4 +63,46 @@ class GetParams
         }
         return $resStr;
     }
+
+    //将cookie整合进rediscookie
+    static public function mergeCookie($cookie)
+    {
+        $rCookie = Redis::hget(config('rkey.data.key'),'cookie');
+        $res['rcookie'] = self::split($rCookie);
+        $res['cookie'] = self::split($cookie);
+        return $res;
+    }
+
+    //拆解cookie
+    static public function split($cookie)
+    {
+        if($cookie == ''){
+            return false;
+        }
+        $strArr = str_split($cookie);
+        $cookieArr = [];
+        $key = '';
+        $val = '';
+        $isv = 0;
+        foreach($strArr as $value){
+            if($value == '=' && $isv == 0){
+                $isv = 1;
+                continue;
+            }
+            if($value == ';'){
+                $isv = 0;
+                $cookieArr[$key] = $val;
+                $key = '';
+                $val = '';
+                continue;
+            }
+            if($isv == 0){
+                $key .= $value;
+            }else{
+                $val .= $value;
+            }
+        }
+
+        return $cookieArr;
+    }
 }
