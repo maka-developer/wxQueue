@@ -92,7 +92,7 @@ class SendRequest
     public function synccheck()
     {
         $data = Redis::hgetall(config('rkey.data.key'));
-        $url = "https://webpush.".$data['host']."/cgi-bin/mmwebwx-bin/synccheck?skey=".urlencode($data['skey'])."&sid=".$data['wxsid']."&uin=".$data['wxuin']."&deviceid=".$this->TrueRand."&synckey=".urlencode($data['syncKeyStr'])."&_=".time().rand(100,999);
+        $url = "https://webpush.".$data['host']."/cgi-bin/mmwebwx-bin/synccheck?skey=".urlencode($data['skey'])."&sid=".urlencode($data['wxsid'])."&uin=".$data['wxuin']."&deviceid=".$this->TrueRand."&synckey=".urlencode($data['syncKey'])."&_=".time().rand(100,999);
         $queue = new RequestHandel($url);
         $res = $queue->request(array(), 'GET', $data['cookie'], 0, 'body');
         $resArr['res'] = $res;

@@ -44,7 +44,7 @@ class WxMessage
             //1、更新synckey
             unset($data);
             $data['syncKey'] = json_encode($res['body']['SyncKey']);
-            $data['syncKeyStr'] = GetParams::updateSyncKey($res['body']['SyncKey']);
+//            $data['syncKeyStr'] = GetParams::updateSyncKey($res['body']['SyncKey']);
             $data['cookie'] = GetParams::mergeCookie($res['cookie']);
             Redis::hmset(config('rkey.data.key'),$data);    //保存参数
         }
