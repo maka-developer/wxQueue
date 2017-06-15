@@ -27,7 +27,7 @@ class WxMessage
                 'Uin' => $data['wxuin']
             ],
             'SyncKey' => json_decode($data['syncKey'],true),
-            'rr' => time() - (60*60*24*11)
+            'rr' => time()
         ];
         $queue = new RequestHandel($url);
         $res = $queue->request($post, 'POST', $data['cookie'], 1);
