@@ -115,7 +115,6 @@ class SendRequest
             $resArr['url'] = $url;
             Redis::hset(config('rkey.errorMsg.key'),date('Y-m-d H:i:s'),json_encode($resArr));
             if(!$res){
-                Redis::set(config('rkey.code.key'), 102);
                 exit();
             }else{
                 Redis::set(config('rkey.code.key'), 1101);
