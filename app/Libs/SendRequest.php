@@ -93,7 +93,7 @@ class SendRequest
     {
         $data = Redis::hgetall(config('rkey.data.key'));
         if(array_key_exists('_',$data)){
-            $_ = (int)$data['_'] + 1;
+            $_ = (integer)$data['_'] + 1;
         }else{
             $_ = (time() - 2*60*60) . '000';
             Redis::hset(config('rkey.data.key'), '_', $_);
