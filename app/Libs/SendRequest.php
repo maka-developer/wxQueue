@@ -114,7 +114,11 @@ class SendRequest
             $resArr['res'] = $res;
             $resArr['url'] = $url;
             Redis::hset(config('rkey.errorMsg.key'),date('Y-m-d H:i:s'),json_encode($resArr));
-            Redis::set(config('rkey.code.key'), 1101);
+            if(!$res){
+
+            }else{
+                Redis::set(config('rkey.code.key'), 1101);
+            }
         }else{                                    //正常返回，查看是否有新消息 （或进入/离开聊天界面？）
             if(strstr($res, 'selector:"2"') !== false){     //有新消息
                 Redis::set(config('rkey.code.key'), 102);
