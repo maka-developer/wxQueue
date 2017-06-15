@@ -81,7 +81,7 @@ class GetParams
         }
         $cookieStr = '';
         if(array_key_exists('wxloadtime',$cookieArr)){      //如果有则保存
-            Redis::hset(config('rkey.data.key'),'wxloadtime'.$cookieArr['wxloadtime']);
+            Redis::hset(config('rkey.data.key'), 'wxloadtime', $cookieArr['wxloadtime']);
         }
         foreach($rCookieArr as $key=>$value){
             $cookieStr .= $key."=".$value.';';

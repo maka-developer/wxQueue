@@ -118,7 +118,7 @@ class WxGetItem
             return true;
         }else{      //获取错误数据
             Redis::hset(config('rkey.errorMsg.key'),date('Y-m-d H:i:s'),json_encode($res));
-            return true;
+            return false;
         }
     }
 
