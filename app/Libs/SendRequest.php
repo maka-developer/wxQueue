@@ -93,9 +93,9 @@ class SendRequest
     {
         $data = Redis::hgetall(config('rkey.data.key'));
         if(array_key_exists('_',$data)){
-            $_ = (integer)$data['_'] + 1;
+
+            Redis::hset(config('rkey.data.key'), '_', $_);
         }else{
-            $_ = (time() - 2*60*60) . '000';
             Redis::hset(config('rkey.data.key'), '_', $_);
         }
         $url = "https://webpush.".$data['host']."/cgi-bin/mmwebwx-bin/synccheck?skey=".urlencode($data['skey'])."&sid=".urlencode($data['wxsid'])."&uin=".$data['wxuin']."&deviceid=".$this->TrueRand."&synckey=".urlencode(GetParams::updateSyncKey($data['syncKey']))."&_=$_";

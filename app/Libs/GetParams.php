@@ -121,4 +121,21 @@ class GetParams
 
         return $cookieArr;
     }
+
+    //长整型相加
+    static function numAdd($num, $addNum = 1)
+    {
+        $num_length = strlen($num);
+        $add_length = strlen($addNum);
+        if($add_length > 10){   //暂不支持 两个长整型相加
+            return false;
+        }
+        if($num_length < $add_length){  //必须前一位大于后一位
+            return self::numAdd($addNum,$num);
+        }
+
+        //运算
+        $add = substr($num, 0, -$add_length) . (string)((int)substr($num, -$add_length) + $addNum);
+        return $add;
+    }
 }
