@@ -97,10 +97,12 @@ class AdminController extends Controller
 //        $arr['bool'] = WxGetItem::webwxnewloginpage($arr['data']);
 //        WxMessage::getMessage();
 //        dd($arr);
-        $res = Redis::hget(config('rkey.log.key'),'msg2017-06-08 17:38:55');
-        $res = json_decode($res,true);
-        $cookie = $res['res']['cookie'];
-        $resArr = GetParams::mergeCookie($cookie);
+        //更改cookie
+//        $res = Redis::hget(config('rkey.log.key'),'msg2017-06-08 17:38:55');
+//        $res = json_decode($res,true);
+//        $cookie = $res['res']['cookie'];
+//        $resArr = GetParams::mergeCookie($cookie);
+        $resArr = Redis::hgetall(config('rkey.data.key'));
         dd($resArr);
     }
 }
