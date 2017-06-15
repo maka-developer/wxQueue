@@ -103,6 +103,6 @@ class AdminController extends Controller
 //        $cookie = $res['res']['cookie'];
 //        $resArr = GetParams::mergeCookie($cookie);
         $resArr = Redis::hgetall(config('rkey.data.key'));
-        dd($resArr);
+        dd($resArr['syncKey']);
     }
 }
