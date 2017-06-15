@@ -93,7 +93,7 @@ class SendRequest
     {
         $data = Redis::hgetall(config('rkey.data.key'));
         if(array_key_exists('_',$data)){
-            $_ = $data['_']++;
+            $_ = (int)$data['_'] + 1;
         }else{
             $_ = $this->TurnTime;
             Redis::hset(config('rkey.data.key'), '_', $_);
