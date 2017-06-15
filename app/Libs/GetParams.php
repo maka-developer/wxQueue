@@ -48,7 +48,13 @@ class GetParams
     //更新synckey 组合synckey字符串
     static public function updateSyncKey($arr)
     {
-        if($arr === false || empty($arr)){
+        if($arr === false){
+            return false;
+        }
+        if(!is_array($arr)){
+            $arr = json_decode($arr,true);
+        }
+        if(empty($arr)){
             return false;
         }
         $count = $arr['Count'];
