@@ -33,7 +33,6 @@ class RecordLog
         if($title != ''){
             $log['title'] = $title;
         }
-        return $log;
         $log->save();
         return true;
     }
