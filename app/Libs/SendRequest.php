@@ -5,6 +5,7 @@
 namespace App\Libs;
 
 use App\Libs\GetParams;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redis;
 
 class SendRequest
@@ -48,15 +49,14 @@ class SendRequest
             $queue = new RequestHandel($url);
             $res = $queue->request(array(), 'GET', 0, 0, 'body');
             if (!$res) {              //无操作
-                Redis::hset(config('rkey.testMsg.key'), date('Y-m-d H:i:s'), '等待.....');
+                Log::info(date('Y-m-d H:i:s'),': 等待.....');
                 Redis::set(config('rkey.code.key'), 0);
                 exit();
             } else if ($res == 'window.code=201;') {        //通过扫码
-                Redis::hset(config('rkey.testMsg.key'), date('Y-m-d H:i:s'), $res);
+                Log::error(date('Y-m-d H:i:s'),': 通过扫码');
                 Redis::set(config('rkey.code.key'), 2);
                 exit();
             } else if (strstr($res,'window.code=200;')) {         //登录
-                Redis::hset(config('rkey.testMsg.key'), date('Y-m-d H:i:s'), $res);
                 //保存状态值
                 $code = 3;
                 Redis::set(config('rkey.code.key'), $code);
@@ -66,25 +66,18 @@ class SendRequest
                 exit();
             } else if ($res == 'window.code=400;' || $res == 'window.code=408;') {     //过期
                 WxGetItem::getUuid();       //重新生成uuid
-                Redis::hset(config('rkey.testMsg.key'), date('Y-m-d H:i:s'), $res);
+                $errArr['msg'] = 'uuid过期';
                 $errArr['url'] = $url;
                 $errArr['code'] = $code;
                 Redis::hset(config('rkey.errorMsg.key'),date('Y-m-d H:i:s'),json_encode($errArr));
                 Redis::set(config('rkey.code.key'), 1);
                 exit();
             } else {
-                Redis::hset(config('rkey.testMsg.key'), date('Y-m-d H:i:s'), $res);
+                $resArr['msg'] = '未知错误';
+                $resArr['result'] = $res;
+                Redis::hset(config('rkey.errorMsg.key'), date('Y-m-d H:i:s'), json_encode($resArr));
             }
         }
-    }
-
-    /*
-     * 获取群组信息
-     * 一次最多获取50条
-     */
-    public function webwxbatchgetcontact()
-    {
-
     }
     /*
      *  同步刷新
