@@ -106,17 +106,18 @@ class SendRequest
         $resArr['url'] = $url;
         Redis::hset(config('rkey.testMsg.key'),date('Y-m-d H:i:s'),json_encode($resArr));
         if(!strstr($res, 'retcode:"0"')){
-            /*
-             * 失败、退出微信
-             * 1、记录error数据
-             * 2、停止进程
-             */
-            $resArr['res'] = $res;
-            $resArr['url'] = $url;
-            Redis::hset(config('rkey.errorMsg.key'),date('Y-m-d H:i:s'),json_encode($resArr));
             if(!$res){
+                //没有消息体的时候会返回false，不知道为什么
                 exit();
             }else{
+                /*
+                 * 失败、退出微信
+                 * 1、记录error数据
+                 * 2、停止进程
+                 */
+                $resArr['res'] = $res;
+                $resArr['url'] = $url;
+                Redis::hset(config('rkey.errorMsg.key'),date('Y-m-d H:i:s'),json_encode($resArr));
                 Redis::set(config('rkey.code.key'), 1101);
             }
         }else{                                    //正常返回，查看是否有新消息 （或进入/离开聊天界面？）
