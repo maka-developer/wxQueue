@@ -51,8 +51,8 @@ class SendRequest
                 Redis::set(config('rkey.code.key'), 0);
                 exit();
             } else if ($res == 'window.code=201;') {        //通过扫码
-                RecordLog::log('通过扫码',1);
                 Redis::set(config('rkey.code.key'), 2);
+                RecordLog::log('通过扫码',1);
                 exit();
             } else if (strstr($res,'window.code=200;')) {         //登录
                 RecordLog::log('用户授权登陆 -- '.$res);
