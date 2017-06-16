@@ -5,6 +5,7 @@ namespace app\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Jobs\WxLoading;
 use App\Libs\GetParams;
+use App\Libs\RecordLog;
 use App\Libs\RequestHandel;
 use App\Libs\SendRequest;
 use App\Libs\WxGetItem;
@@ -103,10 +104,6 @@ class AdminController extends Controller
 //        $cookie = $res['res']['cookie'];
 //        $resArr = GetParams::mergeCookie($cookie);
 //        $resArr = Redis::hgetall(config('rkey.data.key'));
-        $time = time() . '000';
-        $arr['num1'] = GetParams::numAdd($time);
-        $arr['num2'] = GetParams::numAdd($arr['num1']);
-        $arr['num3'] = GetParams::numAdd($arr['num2']);
-        dd($arr);
+        RecordLog::log('通过扫码',1);
     }
 }
