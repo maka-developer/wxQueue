@@ -25,7 +25,6 @@ class RecordLog
             }
             $content = $str;
         }
-        return 1;
         $log = new LogModel();
         $log['msg'] = $content;
         if($outtime != ''){
@@ -34,6 +33,7 @@ class RecordLog
         if($title != ''){
             $log['title'] = $title;
         }
+        return $log;
         $log->save();
         return true;
     }
