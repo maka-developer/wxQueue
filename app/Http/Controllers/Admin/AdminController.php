@@ -10,7 +10,6 @@ use App\Libs\RequestHandel;
 use App\Libs\SendRequest;
 use App\Libs\WxGetItem;
 use App\Libs\WxMessage;
-use App\Model\LogModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redis;
 
@@ -105,8 +104,7 @@ class AdminController extends Controller
 //        $cookie = $res['res']['cookie'];
 //        $resArr = GetParams::mergeCookie($cookie);
 //        $resArr = Redis::hgetall(config('rkey.data.key'));
-//        $res = RecordLog::log('通过扫码',1);
-        $res = LogModel::all();
-        dd($res);
+        $res = RecordLog::log('通过扫码',1);
+        var_dump($res);
     }
 }
