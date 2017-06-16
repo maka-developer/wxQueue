@@ -25,6 +25,7 @@ class RecordLog
             }
             $content = $str;
         }
+        return 1;
         $log = new LogModel();
         $log['msg'] = $content;
         if($outtime != ''){
