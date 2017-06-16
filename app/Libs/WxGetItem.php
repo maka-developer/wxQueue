@@ -68,9 +68,8 @@ class WxGetItem
         $url = "https://".$data['host']."/cgi-bin/mmwebwx-bin/webwxnewloginpage?ticket=".$data['ticket']."&uuid=".$data['uuid']."&lang=zh_CN&scan=".$data['scan'];
         $queue = new RequestHandel($url);
         $res = $queue->request(array(), 'GET', 0, 0);
-        $logArr['res'] = $res;
-        $logArr['time'] = date('Y-m-d H:i:s');
-        Redis::hset(config('rkey.log.key'), 'loginPage',json_encode($logArr));
+        //日志
+        RecordLog::log('webwxnewloginpage','',$res['body']);
         //解析xml
         $xml = simplexml_load_string($res['body']);
         //保存值
@@ -84,6 +83,7 @@ class WxGetItem
             $code = 4;
             return true;
         }else{
+            Redis::hset(config('rkey.errorMsg.key'),date('Y-m-d H:i:s'),json_encode($res));
             return false;
         }
     }
@@ -106,12 +106,10 @@ class WxGetItem
             ]
         ];
         $res = $queue->request($post, 'POST', '', 1);
-        $logArr['res'] = $res;
-        $logArr['time'] = date('Y-m-d H:i:s');
-        Redis::hset(config('rkey.log.key'), 'webwxinit',json_encode($logArr));
+        //日志
+        RecordLog::log('webwxinit','',$res['body']);
         if($res['body']['User']['Uin'] == $data['wxuin']){      //获取正确数据
             $data['UserName'] = (string) $res['body']['User']['UserName'];
-//            $data['syncKeyStr'] = GetParams::updateSyncKey($res['body']['SyncKey']);
             $data['syncKey'] = json_encode($res['body']['SyncKey']);
             Redis::hmset(config('rkey.data.key'),$data);    //保存参数
             $code = 5;
@@ -144,14 +142,13 @@ class WxGetItem
             'ToUserName' => $data['UserName']
         ];
         $res = $queue->request($post, 'POST', '', 1, 'body');
-        $logArr['res'] = $res;
-        $logArr['time'] = date('Y-m-d H:i:s');
-        Redis::hset(config('rkey.log.key'), 'webwxstatusnotify',json_encode($logArr));
+        //日志
+        RecordLog::log('webwxstatusnotify','10',$res);
         if($res['BaseResponse']['Ret'] == 0){
             $code = 6;
             return true;
         }else{
-            Redis::hset(config('rkey.errorMsg.key'),date('Y-m-d H:i:s'),json_encode($res));
+            Redis::hset(config('rkey.errorMsg.key'),date('Y-m-d H:i:s'),$res);
             return false;
         }
     }
@@ -165,9 +162,8 @@ class WxGetItem
         $url = "https://".$data['host']."/cgi-bin/mmwebwx-bin/webwxgetcontact?r=$ClientMsgId&seq=0&skey=".$data['skey']."&pass_ticket=".$data['pass_ticket']."&lang=zh_CN";
         $queue = new RequestHandel($url);
         $res = $queue->request(array(), 'POST', $data['cookie'], 1);
-        $logArr['res'] = $res;
-        $logArr['time'] = date('Y-m-d H:i:s');
-        Redis::hset(config('rkey.log.key'), 'webwxgetcontact',json_encode($logArr));
+        //日志
+        RecordLog::log('webwxgetcontact','10',$res['body']);
         if($res['body']['BaseResponse']['Ret'] == 0){
             $code = 7;
             return true;

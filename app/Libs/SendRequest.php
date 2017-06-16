@@ -5,7 +5,6 @@
 namespace App\Libs;
 
 use App\Libs\GetParams;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redis;
 
 class SendRequest
@@ -42,21 +41,21 @@ class SendRequest
 
         if($uuid == 'error'){
             $errArr['code'] = $code;
-            $errArr['position'] = 'class:SendRequest=>fun:sendLogin';
+            $errArr['msg'] = '未获取到openid';
             Redis::hset(config('rkey.errorMsg.key'),date('Y-m-d H:i:s'),json_encode($errArr));
         }else {
             $url = "https://login.wx.qq.com/cgi-bin/mmwebwx-bin/login?uuid=$uuid&tip=$tip&_=" . $this->TurnTime;
             $queue = new RequestHandel($url);
             $res = $queue->request(array(), 'GET', 0, 0, 'body');
             if (!$res) {              //无操作
-                Log::info(date('Y-m-d H:i:s'),': 等待.....');
                 Redis::set(config('rkey.code.key'), 0);
                 exit();
             } else if ($res == 'window.code=201;') {        //通过扫码
-                Log::error(date('Y-m-d H:i:s'),': 通过扫码');
+                RecordLog::log('通过扫码',1);
                 Redis::set(config('rkey.code.key'), 2);
                 exit();
             } else if (strstr($res,'window.code=200;')) {         //登录
+                RecordLog::log('用户授权登陆 -- '.$res);
                 //保存状态值
                 $code = 3;
                 Redis::set(config('rkey.code.key'), $code);
@@ -65,6 +64,7 @@ class SendRequest
                 WxGetItem::loginInit($code);
                 exit();
             } else if ($res == 'window.code=400;' || $res == 'window.code=408;') {     //过期
+                RecordLog::log('uuid过期，重新生成');
                 WxGetItem::getUuid();       //重新生成uuid
                 $errArr['msg'] = 'uuid过期';
                 $errArr['url'] = $url;
@@ -76,6 +76,8 @@ class SendRequest
                 $resArr['msg'] = '未知错误';
                 $resArr['result'] = $res;
                 Redis::hset(config('rkey.errorMsg.key'), date('Y-m-d H:i:s'), json_encode($resArr));
+                $code = 1120;
+                Redis::set(config('rkey.code.key'), $code);
             }
         }
     }
@@ -103,11 +105,6 @@ class SendRequest
                 //没有消息体的时候会返回false，不知道为什么
                 exit();
             }else{
-                /*
-                 * 失败、退出微信
-                 * 1、记录error数据
-                 * 2、停止进程
-                 */
                 $resArr['res'] = $res;
                 $resArr['url'] = $url;
                 Redis::hset(config('rkey.errorMsg.key'),date('Y-m-d H:i:s'),json_encode($resArr));
