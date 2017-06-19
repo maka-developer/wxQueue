@@ -85,7 +85,7 @@ class WxGetItem
         }else{
             $resArr['url'] = $url;
             $resArr['res'] = $res;
-            Redis::hset(config('rkey.errorMsg.key'),date('Y-m-d H:i:s'),json_encode($resArr));
+            Redis::hset(config('rkey.errorMsg.key'),date('Y-m-d H:i:s'),'url::'.$url.';res::'.json_encode($res));
             return false;
         }
     }
