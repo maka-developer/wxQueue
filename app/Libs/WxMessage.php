@@ -31,10 +31,10 @@ class WxMessage
         ];
         $queue = new RequestHandel($url);
         $res = $queue->request($post, 'POST', $data['cookie'], 1);
-        $resArr['res'] = $res;
+        $resArr['res'] = $res['body'];
         $resArr['url'] = $url;
         $resArr['post'] = $post;
-        Redis::hset(config('rkey.log.key'), date('Y-m-d H:i:s'),json_encode($resArr['body']));
+        Redis::hset(config('rkey.log.key'), date('Y-m-d H:i:s'),json_encode($resArr));
         if($res['body']['BaseResponse']['Ret'] != 0){
             $str = "code=".$res['body']['BaseResponse']['Ret'].";\r\n";
             $str .= "url=".$url.";\r\n";
