@@ -33,13 +33,12 @@ class WxMessage
         $res = $queue->request($post, 'POST', $data['cookie'], 1);
         $resArr['res'] = $res['body']['AddMsgList'];
         $resArr['selector'] = $selector;
+        /*测试用
+        */
         Redis::hset(config('rkey.log.key'), date('Y-m-d H:i:s'),json_encode($resArr));
+        /**/
         if($res['body']['BaseResponse']['Ret'] != 0){
-            $str = "code=".$res['body']['BaseResponse']['Ret'].";\r\n";
-            $str .= "url=".$url.";\r\n";
-            $str .= "post=".$post.";\r\n";
-            $str .= "res=".$res.";\r\n";
-            Redis::hset(config('rkey.errorMsg.key'),date('Y-m-d H:i:s'),$str);
+            Redis::hset(config('rkey.errorMsg.key'),date('Y-m-d H:i:s'),$resArr);
             Redis::set(config('rkey.code.key'), 1101);
         }else{
             $str = "code=0;";
@@ -53,4 +52,5 @@ class WxMessage
         }
         exit();
     }
+    
 }
