@@ -14,7 +14,7 @@ class WxMessage
     /*
      * 获取消息
      */
-    static public function getMessage($selector)
+    static public function getMessage($selector = '')
     {
         $deviceId = 'e'.time().rand(10000,99999);
         $data = Redis::hgetall(config('rkey.data.key'));
