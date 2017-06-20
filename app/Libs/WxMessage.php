@@ -43,11 +43,10 @@ class WxMessage
             Redis::hset(config('rkey.errorMsg.key'),date('Y-m-d H:i:s'),$str);
             Redis::set(config('rkey.code.key'), 1101);
         }else{
-            $str = "code=0;\r\n";
-            $str .= "msg=".json_encode($res['body']['AddMsgList']).";\r\n";
-            $str .= "selector=".json_encode($selector).";\r\n";
+            $str = "code=0;";
+            $str .= "msg=".json_encode($res['body']['AddMsgList']).";";
+            $str .= "selector=".json_encode($selector).";";
             Redis::hset(config('rkey.msgs.key'),date('Y-m-d H:i:s'),$str);
-            Redis::set(config('rkey.code.key'), 7);
             //1、更新synckey
             unset($data);
             $data['syncKey'] = json_encode($res['body']['SyncKey']);
