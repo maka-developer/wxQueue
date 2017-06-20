@@ -14,7 +14,7 @@ class WxMessage
     /*
      * 获取消息
      */
-    static public function getMessage()
+    static public function getMessage($selector)
     {
         $deviceId = 'e'.time().rand(10000,99999);
         $data = Redis::hgetall(config('rkey.data.key'));
@@ -36,15 +36,21 @@ class WxMessage
         $resArr['post'] = $post;
         Redis::hset(config('rkey.log.key'), 'msg'.date('Y-m-d H:i:s'),json_encode($resArr));
         if($res['body']['BaseResponse']['Ret'] != 0){
-            Redis::hset(config('rkey.errorMsg.key'),date('Y-m-d H:i:s'),json_encode($res));
+            $str = "code=".$res['body']['BaseResponse']['Ret'].";\r\n";
+            $str .= "url=".$url.";\r\n";
+            $str .= "post=".$post.";\r\n";
+            $str .= "res=".$res.";\r\n";
+            Redis::hset(config('rkey.errorMsg.key'),date('Y-m-d H:i:s'),$str);
             Redis::set(config('rkey.code.key'), 1101);
         }else{
-            Redis::hset(config('rkey.msgs.key'),date('Y-m-d H:i:s'),json_encode($res));
+            $str = "code=0;\r\n";
+            $str .= "msg=".json_encode($res['body']['AddMsgList']).";\r\n";
+            $str .= "selector=".$selector.";\r\n";
+            Redis::hset(config('rkey.msgs.key'),date('Y-m-d H:i:s'),$str);
             Redis::set(config('rkey.code.key'), 7);
             //1、更新synckey
             unset($data);
             $data['syncKey'] = json_encode($res['body']['SyncKey']);
-//            $data['cookie'] = GetParams::mergeCookie($res['cookie']);
             Redis::hmset(config('rkey.data.key'),$data);    //保存参数
         }
         exit();
