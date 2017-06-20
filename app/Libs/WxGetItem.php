@@ -114,7 +114,10 @@ class WxGetItem
             $code = 5;
             return true;
         }else{      //获取错误数据
-            Redis::hset(config('rkey.errorMsg.key'),date('Y-m-d H:i:s'),json_encode($res));
+            $str = "url::".$url.";\r\n";
+            $str .= "post::".json_encode($post).";\r\n";
+            $str .= "res::".json_encode($res).";\r\n";
+            Redis::hset(config('rkey.errorMsg.key'),date('Y-m-d H:i:s'),$str);
             return false;
         }
     }
