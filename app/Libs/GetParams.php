@@ -20,6 +20,7 @@ class GetParams
         $arr = explode('&',$info);
         $resArr = array();
         $resArr['host'] = $server['host'];
+        $resArr['url'] = $url;
         foreach($arr as $key=>$value){
             $strArr = str_split($value);
             $resType = 0;
