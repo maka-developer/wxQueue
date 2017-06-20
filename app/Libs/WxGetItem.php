@@ -65,7 +65,7 @@ class WxGetItem
      */
     static public function webwxnewloginpage(&$data,&$code)
     {
-        $url = $data['url']."&fun=new";
+        $url = $data['url']."&fun=new&version=v2";
         $queue = new RequestHandel($url);
         $res = $queue->request(array(), 'GET', 0, 0);
         //日志
