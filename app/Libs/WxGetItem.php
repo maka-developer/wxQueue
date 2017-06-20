@@ -107,7 +107,6 @@ class WxGetItem
         ];
         $res = $queue->request($post, 'POST', '', 1);
         //日志
-        RecordLog::log('webwxinit','',$res['body']);
         if($res['body']['User']['Uin'] == $data['wxuin']){      //获取正确数据
             $data['UserName'] = (string) $res['body']['User']['UserName'];
             $data['syncKey'] = json_encode($res['body']['SyncKey']);
@@ -143,7 +142,6 @@ class WxGetItem
         ];
         $res = $queue->request($post, 'POST', '', 1, 'body');
         //日志
-        RecordLog::log('webwxstatusnotify','10',$res);
         if($res['BaseResponse']['Ret'] == 0){
             $code = 6;
             return true;
@@ -163,7 +161,6 @@ class WxGetItem
         $queue = new RequestHandel($url);
         $res = $queue->request(array(), 'POST', $data['cookie'], 1);
         //日志
-        RecordLog::log('webwxgetcontact','10',$res['body']);
         if($res['body']['BaseResponse']['Ret'] == 0){
             $code = 7;
             return true;
