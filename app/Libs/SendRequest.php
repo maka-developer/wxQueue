@@ -61,7 +61,7 @@ class SendRequest
                 Redis::set(config('rkey.code.key'), $code);
                 $data = GetParams::getItem($res);            //解析参数
                 Redis::hmset(config('rkey.data.key'),$data);    //保存参数
-                WxGetItem::loginInit($code);
+//                WxGetItem::loginInit($code);
                 Redis::hset(config('rkey.errorMsg.key'),date('Y-m-d H:i:s'),$res);
 //                exit();
             } else if ($res == 'window.code=400;' || $res == 'window.code=408;') {     //过期
