@@ -34,7 +34,7 @@ class WxMessage
         $resArr['res'] = $res;
         $resArr['url'] = $url;
         $resArr['post'] = $post;
-        Redis::hset(config('rkey.log.key'), 'msg'.date('Y-m-d H:i:s'),json_encode($resArr));
+        Redis::hset(config('rkey.log.key'), date('Y-m-d H:i:s'),json_encode($resArr['body']));
         if($res['body']['BaseResponse']['Ret'] != 0){
             $str = "code=".$res['body']['BaseResponse']['Ret'].";\r\n";
             $str .= "url=".$url.";\r\n";
