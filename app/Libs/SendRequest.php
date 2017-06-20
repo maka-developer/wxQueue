@@ -61,9 +61,8 @@ class SendRequest
                 Redis::set(config('rkey.code.key'), $code);
                 $data = GetParams::getItem($res);            //解析参数
                 Redis::hmset(config('rkey.data.key'),$data);    //保存参数
-//                WxGetItem::loginInit($code);
-                Redis::hset(config('rkey.errorMsg.key'),date('Y-m-d H:i:s'),$res);
-//                exit();
+                WxGetItem::loginInit($code);
+                exit();
             } else if ($res == 'window.code=400;' || $res == 'window.code=408;') {     //过期
                 RecordLog::log('uuid过期，重新生成');
                 WxGetItem::getUuid();       //重新生成uuid
