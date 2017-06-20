@@ -32,6 +32,7 @@ class WxMessage
         $queue = new RequestHandel($url);
         $res = $queue->request($post, 'POST', $data['cookie'], 1);
         $resArr['res'] = $res['body']['AddMsgList'];
+        $resArr['selector'] = $selector;
         Redis::hset(config('rkey.log.key'), date('Y-m-d H:i:s'),json_encode($resArr));
         if($res['body']['BaseResponse']['Ret'] != 0){
             $str = "code=".$res['body']['BaseResponse']['Ret'].";\r\n";
