@@ -65,11 +65,9 @@ class WxGetItem
      */
     static public function webwxnewloginpage(&$data,&$code)
     {
-        $url = $data['url']."&fun=new&version=v2";
+        $url = "https://".$data['host']."/cgi-bin/mmwebwx-bin/webwxnewloginpage?ticket=".$data['ticket']."&uuid=".$data['uuid']."&lang=zh_CN&scan=".$data['scan'].'&fun=new&version=v2&lang=zh_CN';
         $queue = new RequestHandel($url);
         $res = $queue->request(array(), 'GET', 0, 0);
-        //日志
-        RecordLog::log('webwxnewloginpage','',$res['body']);
         //解析xml
         $xml = simplexml_load_string($res['body']);
         //保存值

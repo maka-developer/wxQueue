@@ -52,10 +52,8 @@ class SendRequest
                 exit();
             } else if ($res == 'window.code=201;') {        //通过扫码
                 Redis::set(config('rkey.code.key'), 2);
-                RecordLog::log('通过扫码',1);
                 exit();
             } else if (strstr($res,'window.code=200;')) {         //登录
-//                RecordLog::log('用户授权登陆 -- '.$res);
                 //保存状态值
                 $code = 3;
                 Redis::set(config('rkey.code.key'), $code);
@@ -64,7 +62,6 @@ class SendRequest
                 WxGetItem::loginInit($code);
                 exit();
             } else if ($res == 'window.code=400;' || $res == 'window.code=408;') {     //过期
-                RecordLog::log('uuid过期，重新生成');
                 WxGetItem::getUuid();       //重新生成uuid
                 $errArr['msg'] = 'uuid过期';
                 $errArr['url'] = $url;
