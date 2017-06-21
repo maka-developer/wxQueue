@@ -31,19 +31,46 @@ class WxMessage
         ];
         $queue = new RequestHandel($url);
         $res = $queue->request($post, 'POST', $data['cookie'], 1);
-        $resArr['res'] = $res['body'];
-        /*测试用
-        */
-        Redis::hset(config('rkey.log.key'), date('Y-m-d H:i:s'),json_encode($resArr));
-        /**/
         if($res['body']['BaseResponse']['Ret'] != 0){
-            Redis::hset(config('rkey.errorMsg.key'),date('Y-m-d H:i:s'),$resArr);
+            Redis::hset(config('rkey.errorMsg.key'),date('Y-m-d H:i:s'),$res);
             Redis::set(config('rkey.code.key'), 1101);
         }else{
             //1、更新synckey
             unset($data);
             $data['syncKey'] = json_encode($res['body']['SyncKey']);
             Redis::hmset(config('rkey.data.key'),$data);    //保存参数
+        }
+        exit();
+    }
+
+    static public function sendMsg($toUser, $content='')
+    {
+        $data = Redis::hgetall(config('rkey.data.key'));
+        $localId = time().rand(1000000,9999999);
+        $deviceId = 'e'.time().rand(10000,99999);
+        $url = "https://".$data['host']."/cgi-bin/mmwebwx-bin/webwxsendmsg?pass_ticket=".$data['pass_ticket'];
+        $post = [
+            'BaseRequest' => [
+                'DeviceID' => $deviceId,
+                'Sid' => $data['wxsid'],
+                'Skey' => $data['skey'],
+                'Uin' => $data['wxuin']
+            ],
+            'Msg'=>[
+                'Type'=>1,
+                'Content'=>$content,
+                'FromUserName'=>$data['UserName'],
+                'ToUserName'=>$toUser,
+                'LocalID'=>$localId,
+                'ClientMsgId'=>$localId
+            ]
+        ];
+        $queue = new RequestHandel($url);
+        $res = $queue->request($post, 'POST', $data['cookie'], 1);
+        if($res['body']['BaseResponse']['Ret'] != 0){
+            Redis::hset(config('rkey.errorMsg.key'),date('Y-m-d H:i:s'),$res);
+        }else{
+            //信息发送成功处理,暂无
         }
         exit();
     }

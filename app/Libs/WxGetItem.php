@@ -4,6 +4,7 @@
  */
 namespace App\Libs;
 
+use App\Libs\WxDbUserItem;
 use Illuminate\Support\Facades\Redis;
 
 class WxGetItem
@@ -167,6 +168,9 @@ class WxGetItem
         //日志
         if($res['body']['BaseResponse']['Ret'] == 0){
             Redis::hset(config('rkey.testMsg.key'),date('Y-m-d H:i:s'),json_encode($res));
+            $content['MemberCount'] = $res['body']['MemberCount'];
+            $content['MemberList'] = $res['body']['MemberList'];
+            WxDbUserItem::saveUsers($content);
             $code = 7;
             return true;
         }else{

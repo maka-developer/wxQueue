@@ -77,18 +77,13 @@ class AdminController extends Controller
         dd($arr);
     }
 
-    public function test()
+    public function test(Request $request)
     {
-//        $item = Redis::hget(config('rkey.testMsg.key'),'2017-06-21 14:55:16');
-//        $item = json_decode($item,true);
-//        $res['init'] = $item['body'];
-        $content = Redis::hget(config('rkey.testMsg.key'),'2017-06-21 15:42:46');
-        $content = json_decode($content,true);
-//        $res['content'] = $content['body'];
-//        dd($res);
-        $user['MemberCount'] = $content['body']['MemberCount'];
-        $user['MemberList'] = $content['body']['MemberList'];
-        $res = WxDbUserItem::saveUsers($user);
-        var_dump($res);
+        $content = $request->input('content','1');
+        $tu = $request->input('to','');
+        if($tu == ''){
+            echo '请传入接收人';
+        }
+        WxMessage::sendMsg($tu,$content);
     }
 }
