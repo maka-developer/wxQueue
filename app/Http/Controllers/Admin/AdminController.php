@@ -104,7 +104,9 @@ class AdminController extends Controller
 //        $cookie = $res['res']['cookie'];
 //        $resArr = GetParams::mergeCookie($cookie);
 //        $resArr = Redis::hgetall(config('rkey.data.key'));
-        $res = RecordLog::log('通过扫码',1);
-        var_dump($res);
+//        $res = RecordLog::log('通过扫码',1);
+//        var_dump($res);
+        $item = Redis::hget(config('rkey.testMsg.key'),'2017-06-21 11:48:09');
+        dd($item);
     }
 }
