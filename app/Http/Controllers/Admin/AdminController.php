@@ -82,7 +82,7 @@ class AdminController extends Controller
 //        $item = Redis::hget(config('rkey.testMsg.key'),'2017-06-21 14:55:16');
 //        $item = json_decode($item,true);
 //        $res['init'] = $item['body'];
-        $content = Redis::hget(config('rkey.testMsg.key'),'2017-06-21 15:40:14');
+        $content = Redis::hget(config('rkey.testMsg.key'),'2017-06-21 15:42:46');
         $content = json_decode($content,true);
 //        $res['content'] = $content['body'];
 //        dd($res);
