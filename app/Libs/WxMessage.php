@@ -49,10 +49,17 @@ class WxMessage
      */
     static public function putMessage($AddMsgList)
     {
-        $from = $AddMsgList['FromUserName'];
-        $users = UsersModel::where('UserName',$from)->first();
+        if(!$AddMsgList){
+            return false;
+        }
+        $res = [];
+        foreach($AddMsgList as $key=>$value){
 
-        return $users;
+            $from = $value['FromUserName'];
+            $users = UsersModel::where('UserName',$from)->first();
+            $res[] = $users;
+        }
+        return $res;
     }
 
     static public function sendMsg($toUser, $content='')
