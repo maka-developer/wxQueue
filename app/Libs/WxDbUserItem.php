@@ -20,7 +20,7 @@ class WxDbUserItem
                 $dbArr[] = [
                     'uin'=>$value['Uin'],
                     'UserName'=>$value['UserName'],
-                    'NickName'=>$value['NickName'],
+                    'NickName'=>urlencode($value['NickName']),
                     'HeadImgUrl'=>$value['HeadImgUrl'],
                     'ContactFlag'=>$value['ContactFlag'],
                     'MemberCount'=>$value['MemberCount'],
