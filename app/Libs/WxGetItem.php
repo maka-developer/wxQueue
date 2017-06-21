@@ -4,7 +4,7 @@
  */
 namespace App\Libs;
 
-use App\Http\Libs\WxDbUserItem;
+use App\Libs\WxDbUserItem;
 use Illuminate\Support\Facades\Redis;
 
 class WxGetItem
