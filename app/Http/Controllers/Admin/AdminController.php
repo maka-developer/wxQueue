@@ -78,6 +78,8 @@ class AdminController extends Controller
         $time = $request->input('time','2017-06-21 17:25:26');
         $msgs = Redis::hget(config('rkey.msgs.key'),$time);
         $msgs = json_decode($msgs,true);
+        dd($msgs);
+        exit();
         $item = WxMessage::putMessage($msgs['AddMsgList']);
         dd($item);
     }
