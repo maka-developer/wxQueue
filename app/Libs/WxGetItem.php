@@ -4,6 +4,7 @@
  */
 namespace App\Libs;
 
+use App\Http\Libs\WxDbUserItem;
 use Illuminate\Support\Facades\Redis;
 
 class WxGetItem
@@ -166,7 +167,10 @@ class WxGetItem
         $res = $queue->request(array(), 'POST', $data['cookie'], 1);
         //日志
         if($res['body']['BaseResponse']['Ret'] == 0){
-            Redis::hset(config('rkey.testMsg.key'),date('Y-m-d H:i:s'),json_encode($res));
+            //保存好友信息
+            $content['MemberCount'] = $res['body']['MemberCount'];
+            $content['MemberList'] = $res['body']['MemberList'];
+            WxDbUserItem::saveUsers($content);
             $code = 7;
             return true;
         }else{

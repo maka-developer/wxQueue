@@ -3,6 +3,7 @@
 namespace app\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Libs\WxDbUserItem;
 use App\Jobs\WxLoading;
 use App\Libs\GetParams;
 use App\Libs\RecordLog;
@@ -78,40 +79,16 @@ class AdminController extends Controller
 
     public function test()
     {
-//        $data = 'window.code=200;\n
-//      window.redirect_uri="https://wx2.qq.com/cgi-bin/mmwebwx-bin/webwxnewloginpage?ticket=A7aMxW7XyhVkEgiBTcO4ARlS@qrticket_0&uuid=YdCo10e3zg==&lang=zh_CN&scan=1495029818"; ◀
-//      "';
-//        $res = GetInput::getWebWxNewLoginPage($data);
-//        dd($res);
-         //xml
-//        $arr = json_decode(Redis::hget(config('rkey.testMsg.key'),'2017-05-30 08:59:56'),true);
-//        $arr['xml'] = simplexml_load_string($arr['body']);
-//        $arr['message'] = (string)$arr['xml']->pass_ticket;
-
-//        $arr['initstr'] = Redis::hget(config('rkey.testMsg.key'),'2017-06-02 10:09:23');
-//        $arr['contectstr'] = Redis::hget(config('rkey.testMsg.key'),'2017-06-02 10:09:36');
-//        $arr['init'] = json_decode($arr['initstr'],true);
-//        $arr['contect'] = json_decode($arr['contectstr'],true);
-        //redis hmset 测试
-//        $arr['res'] = Redis::hget(config('rkey.testMsg.key'),'2017-06-02 16:19:17');
-//        $arr['data'] = GetParams::getItem($arr['res']);            //解析参数
-//        $arr['bool'] = WxGetItem::webwxnewloginpage($arr['data']);
-//        WxMessage::getMessage();
-//        dd($arr);
-        //更改cookie
-//        $res = Redis::hget(config('rkey.log.key'),'msg2017-06-08 17:38:55');
-//        $res = json_decode($res,true);
-//        $cookie = $res['res']['cookie'];
-//        $resArr = GetParams::mergeCookie($cookie);
-//        $resArr = Redis::hgetall(config('rkey.data.key'));
-//        $res = RecordLog::log('通过扫码',1);
-//        var_dump($res);
-        $item = Redis::hget(config('rkey.testMsg.key'),'2017-06-21 14:55:16');
-        $item = json_decode($item,true);
-        $res['init'] = $item['body'];
+//        $item = Redis::hget(config('rkey.testMsg.key'),'2017-06-21 14:55:16');
+//        $item = json_decode($item,true);
+//        $res['init'] = $item['body'];
         $content = Redis::hget(config('rkey.testMsg.key'),'2017-06-21 14:55:18');
         $content = json_decode($content,true);
-        $res['content'] = $content['body'];
-        dd($res);
+//        $res['content'] = $content['body'];
+//        dd($res);
+        $user['MemberCount'] = $content['body']['MemberCount'];
+        $user['MemberList'] = $content['body']['MemberList'];
+        $res = WxDbUserItem::saveUsers($user);
+        var_dump($res);
     }
 }
