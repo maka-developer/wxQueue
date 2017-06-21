@@ -106,9 +106,12 @@ class AdminController extends Controller
 //        $resArr = Redis::hgetall(config('rkey.data.key'));
 //        $res = RecordLog::log('通过扫码',1);
 //        var_dump($res);
-        $item = Redis::hget(config('rkey.testMsg.key'),'2017-06-21 11:48:09');
+        $item = Redis::hget(config('rkey.testMsg.key'),'2017-06-21 14:39:53');
         $item = json_decode($item,true);
-        $item = $item['body'];
-        dd($item);
+        $res['init'] = $item['body'];
+        $content = Redis::hget(config('rkey.testMsg.key'),'2017-06-21 14:39:58');
+        $content = json_decode($content,true);
+        $res['content'] = $content['body'];
+        dd($res);
     }
 }
