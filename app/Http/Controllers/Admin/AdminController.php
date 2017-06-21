@@ -3,7 +3,7 @@
 namespace app\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Libs\WxDbUserItem;
+use App\Libs\WxDbUserItem;
 use App\Jobs\WxLoading;
 use App\Libs\GetParams;
 use App\Libs\RecordLog;

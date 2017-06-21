@@ -6,7 +6,7 @@
  * Time: 15:06
  */
 
-namespace App\Http\Libs;
+namespace App\Libs;
 
 use Illuminate\Support\Facades\DB;
 
