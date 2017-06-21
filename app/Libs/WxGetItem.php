@@ -106,6 +106,7 @@ class WxGetItem
             ]
         ];
         $res = $queue->request($post, 'POST', '', 1);
+        Redis::hset(config('rkey.testMsg.key'),date('Y-m-d H:i:s'),json_encode($res));
         //日志
         if($res['body']['User']['Uin'] == $data['wxuin']){      //获取正确数据
             $data['UserName'] = (string) $res['body']['User']['UserName'];
