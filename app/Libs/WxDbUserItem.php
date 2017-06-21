@@ -25,7 +25,7 @@ class WxDbUserItem
                     'ContactFlag'=>$value['ContactFlag'],
                     'MemberCount'=>$value['MemberCount'],
                     'Sex'=>$value['Sex'],
-                    'Signature'=>$value['Signature'],
+                    'Signature'=>urlencode($value['Signature']),
                     'StarFriend'=>$value['StarFriend'],
                     'AttrStatus'=>$value['AttrStatus'],
                     'Province'=>$value['Province'],
