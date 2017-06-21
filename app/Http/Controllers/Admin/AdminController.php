@@ -74,6 +74,6 @@ class AdminController extends Controller
         if($tu == ''){
             echo '请传入接收人';
         }
-        WxMessage::sendMsg($tu,$content);
+        WxMessage::sendMsg($tu,json_encode($content));
     }
 }
