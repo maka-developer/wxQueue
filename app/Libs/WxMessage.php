@@ -6,6 +6,7 @@
  */
 namespace App\Libs;
 
+use App\Model\UsersModel;
 use Illuminate\Support\Facades\Redis;
 use App\Libs\GetParams;
 
@@ -35,13 +36,23 @@ class WxMessage
             Redis::hset(config('rkey.errorMsg.key'),date('Y-m-d H:i:s'),json_encode($res));
             Redis::set(config('rkey.code.key'), 1101);
         }else{
-            Redis::hset(config('rkey.msgs.key'),date('Y-m-d H:i:s'),json_encode($res['body']));
+            self::putMessage($res['body']['AddMsgList']);
             //1、更新synckey
             unset($data);
             $data['syncKey'] = json_encode($res['body']['SyncKey']);
             Redis::hmset(config('rkey.data.key'),$data);    //保存参数
         }
         exit();
+    }
+    /*
+     * 处理消息
+     */
+    static public function putMessage($AddMsgList)
+    {
+        $from = $AddMsgList['FromUserName'];
+        $users = UsersModel::where('UserName',$from)->first();
+
+        return $users;
     }
 
     static public function sendMsg($toUser, $content='')
@@ -59,7 +70,7 @@ class WxMessage
             ],
             'Msg'=>[
                 'Type'=>1,
-                'Content'=>$content,
+                'Content'=>urlencode($content),
                 'FromUserName'=>$data['UserName'],
                 'ToUserName'=>$toUser,
                 'LocalID'=>$localId,

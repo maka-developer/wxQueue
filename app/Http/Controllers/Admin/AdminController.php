@@ -69,11 +69,16 @@ class AdminController extends Controller
 
     public function test(Request $request)
     {
-        $content = $request->input('content','中文');
-        $tu = $request->input('to','');
-        if($tu == ''){
-            echo '请传入接收人';
-        }
-        WxMessage::sendMsg($tu,urlencode($content));
+//        $content = $request->input('content','中文');
+//        $tu = $request->input('to','');
+//        if($tu == ''){
+//            echo '请传入接收人';
+//        }
+//        WxMessage::sendMsg($tu,urlencode($content));
+        $time = $request->input('time','2017-06-21 17:25:26');
+        $msgs = Redis::hget(config('rkey.msgs.key'),$time);
+        $msgs = json_decode($msgs,true);
+        $item = WxMessage::putMessage($msgs['AddMsgList']);
+        dd($item);
     }
 }
