@@ -33,16 +33,6 @@ class AdminController extends Controller
         WxGetItem::getUuid();
         //请求成功  得到uuid， 启动队列， 开始监听登录接口， 页面持续加载
         dispatch(new WxLoading());
-
-        // $code = Redis::get(config('rkey.code.key'));     //获取uuid
-        // $sendRequest = new SendRequest();
-        // $sendRequest->sendLogin($code);
-        // $uuid = Redis::get(config('rkey.uuid.key'));     //获取uuid
-        // $tip = 1;                                          //默认tip为1 未扫码
-        // $url = "https://login.wx.qq.com/cgi-bin/mmwebwx-bin/login?uuid=$uuid&tip=$tip&_=" . $this->TurnTime;
-        // $queue = new RequestHandel($url);
-        // $res = $queue->request(array(), 'GET', 0, 0, 'body');
-        // var_dump($res);
     }
 
     public function getdata(Request $request)
