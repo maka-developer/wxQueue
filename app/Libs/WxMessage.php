@@ -32,10 +32,10 @@ class WxMessage
         $queue = new RequestHandel($url);
         $res = $queue->request($post, 'POST', $data['cookie'], 1);
         if($res['body']['BaseResponse']['Ret'] != 0){
-            Redis::hset(config('rkey.errorMsg.key'),date('Y-m-d H:i:s'),$res);
+            Redis::hset(config('rkey.errorMsg.key'),date('Y-m-d H:i:s'),json_encode($res));
             Redis::set(config('rkey.code.key'), 1101);
         }else{
-            Redis::hset(config('rkey.msgs.key'),date('Y-m-d H:i:s'),$res['body']);
+            Redis::hset(config('rkey.msgs.key'),date('Y-m-d H:i:s'),json_encode($res['body']));
             //1、更新synckey
             unset($data);
             $data['syncKey'] = json_encode($res['body']['SyncKey']);
