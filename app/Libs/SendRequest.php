@@ -94,9 +94,6 @@ class SendRequest
         $url = "https://webpush.".$data['host']."/cgi-bin/mmwebwx-bin/synccheck?skey=".urlencode($data['skey'])."&sid=".urlencode($data['wxsid'])."&uin=".$data['wxuin']."&deviceid=".$this->TrueRand."&synckey=".urlencode(GetParams::updateSyncKey($data['syncKey']))."&_=$_";
         $queue = new RequestHandel($url);
         $res = $queue->request(array(), 'GET', $data['cookie'], 0, 'body');
-        $resArr['res'] = $res;
-        $resArr['url'] = $url;
-        Redis::hset(config('rkey.testMsg.key'),date('Y-m-d H:i:s'),json_encode($resArr));
         if(!strstr($res, 'retcode:"0"')){
             if(!$res){
                 //没有消息体的时候会返回false，不知道为什么
@@ -108,13 +105,9 @@ class SendRequest
                 Redis::set(config('rkey.code.key'), 1101);
             }
         }else{                                    //正常返回，查看是否有新消息 （或进入/离开聊天界面？）
-            $selector = $res;
-            WxMessage::getMessage($selector);
-//            if(strstr($res, 'selector:"2"') !== false){     //有新消息
-//                Redis::set(config('rkey.code.key'), 102);
-//            } else if(strstr($res, 'selector:"7"') !== false) { //进入聊天界面  暂时使用102
-//                Redis::set(config('rkey.code.key'), 102);
-//            }
+            if(strstr($res, 'selector:"2"')){   //新消息
+                WxMessage::getMessage();
+            }
             exit();
         }
     }

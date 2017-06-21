@@ -14,7 +14,7 @@ class WxMessage
     /*
      * 获取消息
      */
-    static public function getMessage($selector = '')
+    static public function getMessage()
     {
         $deviceId = 'e'.time().rand(10000,99999);
         $data = Redis::hgetall(config('rkey.data.key'));
@@ -31,8 +31,7 @@ class WxMessage
         ];
         $queue = new RequestHandel($url);
         $res = $queue->request($post, 'POST', $data['cookie'], 1);
-        $resArr['res'] = $res['body']['AddMsgList'];
-        $resArr['selector'] = $selector;
+        $resArr['res'] = $res['body'];
         /*测试用
         */
         Redis::hset(config('rkey.log.key'), date('Y-m-d H:i:s'),json_encode($resArr));
@@ -41,10 +40,6 @@ class WxMessage
             Redis::hset(config('rkey.errorMsg.key'),date('Y-m-d H:i:s'),$resArr);
             Redis::set(config('rkey.code.key'), 1101);
         }else{
-            $str = "code=0;";
-            $str .= "msg=".json_encode($res['body']['AddMsgList']).";";
-            $str .= "selector=".json_encode($selector).";";
-            Redis::hset(config('rkey.msgs.key'),date('Y-m-d H:i:s'),$str);
             //1、更新synckey
             unset($data);
             $data['syncKey'] = json_encode($res['body']['SyncKey']);
