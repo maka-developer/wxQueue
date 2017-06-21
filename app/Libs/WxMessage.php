@@ -35,7 +35,7 @@ class WxMessage
             Redis::hset(config('rkey.errorMsg.key'),date('Y-m-d H:i:s'),$res);
             Redis::set(config('rkey.code.key'), 1101);
         }else{
-            Redis::hset(config('rkey.testMsg.key').date('Y-m-d H:i:s'),$res['body']);
+            Redis::hset(config('rkey.msgs.key'),date('Y-m-d H:i:s'),$res['body']);
             //1、更新synckey
             unset($data);
             $data['syncKey'] = json_encode($res['body']['SyncKey']);
@@ -71,7 +71,7 @@ class WxMessage
         if($res['body']['BaseResponse']['Ret'] != 0){
             Redis::hset(config('rkey.errorMsg.key'),date('Y-m-d H:i:s'),$res);
         }else{
-            //信息发送成功处理,暂无
+            //
         }
         exit();
     }
