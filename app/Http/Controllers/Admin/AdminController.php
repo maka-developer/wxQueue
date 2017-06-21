@@ -69,7 +69,7 @@ class AdminController extends Controller
 
     public function test(Request $request)
     {
-        $content = $request->input('content','1');
+        $content = $request->input('content','中文');
         $tu = $request->input('to','');
         if($tu == ''){
             echo '请传入接收人';
