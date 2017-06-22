@@ -69,8 +69,9 @@ class WxMessage
                         0=>['UserName'=>$value['FromUserName'], 'EncryChatRoomId'=>""]
                     ];
                     $gRes = WxGetItem::webwxbatchgetcontact($group);
+
                     if($gRes['code'] == 0){  //载入群消息成功
-                        self::sendMsg($value['FromUserName'],'群名称:'.$gRes['item']['ContactList']['NickName']);
+                        self::sendMsg($value['FromUserName'],'群名称');
                     }else{
                         self::sendMsg($value['FromUserName'],json_encode($gRes));
                     }
@@ -109,7 +110,9 @@ class WxMessage
         $queue = new RequestHandel($url);
         $res = $queue->request($post, 'POST', $data['cookie'], 1);
         if($res['body']['BaseResponse']['Ret'] != 0){
-            Redis::hset(config('rkey.errorMsg.key'),date('Y-m-d H:i:s'),$res);
+            $resArr['content'] = $content;
+            $resArr['res'] = $res;
+            Redis::hset(config('rkey.errorMsg.key'),date('Y-m-d H:i:s'),json_encode($resArr));
         }else{
             //
         }
