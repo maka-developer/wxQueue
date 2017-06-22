@@ -68,11 +68,11 @@ class WxMessage
                     $group['List'] = [
                         0=>['UserName'=>$value['FromUserName'], 'EncryChatRoomId'=>""]
                     ];
-                    $res = WxGetItem::webwxbatchgetcontact($group);
-                    if($res['code'] == 0){  //载入群消息成功
+                    $gRes = WxGetItem::webwxbatchgetcontact($group);
+                    if($gRes['code'] == 0){  //载入群消息成功
                         self::sendMsg($value['FromUserName'],'群信息载入成功，正在载入群成员....');
                     }else{
-                        self::sendMsg($value['FromUserName'],'群信息载入失败，失败原因：'.$res['msg']);
+                        self::sendMsg($value['FromUserName'],json_encode($gRes));
                     }
                 }else{  //没有好友信息
                     exit();
