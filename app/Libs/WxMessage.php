@@ -69,7 +69,7 @@ class WxMessage
                         0=>['UserName'=>$value['FromUserName'], 'EncryChatRoomId'=>""]
                     ];
                     $gRes = WxGetItem::webwxbatchgetcontact($group);
-
+                    Redis::hset(config('rkey.testMsg.key'),date('Y-m-d H:i:s'),json_encode($gRes));
                     if($gRes['code'] == 0){  //载入群消息成功
                         self::sendMsg($value['FromUserName'],json_encode($gRes['item']));
                     }else{
