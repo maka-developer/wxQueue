@@ -75,7 +75,7 @@ class AdminController extends Controller
 //            echo '请传入接收人';
 //        }
 //        WxMessage::sendMsg($tu,urlencode($content));
-        $time = $request->input('time','2017-06-21 17:25:26');
+        $time = $request->input('time','2017-06-22 09:53:46');
         $msgs = Redis::hget(config('rkey.msgs.key'),$time);
         $msgs = json_decode($msgs,true);
         $item = WxMessage::putMessage($msgs['AddMsgList']);
