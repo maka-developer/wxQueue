@@ -63,7 +63,7 @@ class WxMessage
             if($users[0] == null){  //没有好友信息
                 //判断是否群组
                 if(strstr($value['FromUserName'],'@@')){
-                    self::sendMsg($value['FromUserName'],'未知群，初始化中...');
+//                    self::sendMsg($value['FromUserName'],'未知群，初始化中...');
                     $group['Count'] = 1;
                     $group['List'] = [
                         0=>['UserName'=>$value['FromUserName'], 'EncryChatRoomId'=>""]
