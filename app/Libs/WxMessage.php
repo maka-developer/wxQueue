@@ -63,7 +63,6 @@ class WxMessage
             if($users[0] == null){  //没有好友信息
                 //判断是否群组
                 if(strstr($value['FromUserName'],'@@')){
-                    self::sendMsg($value['FromUserName'],'未知群，初始化中...');
                     $group['Count'] = 1;
                     $group['List'] = [
                         0=>['UserName'=>$value['FromUserName'], 'EncryChatRoomId'=>""]
@@ -78,7 +77,6 @@ class WxMessage
                 }else{  //没有好友信息
                     exit();
                 }
-
             }
             $res[] = $users;
         }
@@ -111,6 +109,33 @@ class WxMessage
         $res = $queue->request($post, 'POST', $data['cookie'], 1);
         if($res['body']['BaseResponse']['Ret'] != 0){
             $resArr['content'] = $content;
+            $resArr['res'] = $res;
+            Redis::hset(config('rkey.errorMsg.key'),date('Y-m-d H:i:s'),json_encode($resArr));
+        }else{
+            //
+        }
+    }
+    //拉群
+    static public function updatechatroom($username,$groupname)
+    {
+        $data = Redis::hgetall(config('rkey.data.key'));
+        $deviceId = 'e'.time().rand(10000,99999);
+        $url = "https://".$data['host']."/cgi-bin/mmwebwx-bin/webwxupdatechatroom?fun=addmember&lang=zh_CN&pass_ticket=".$data['pass_ticket'];
+        $post = [
+            'AddMemberList'=>$username,
+            'BaseRequest' => [
+                'DeviceID' => $deviceId,
+                'Sid' => $data['wxsid'],
+                'Skey' => $data['skey'],
+                'Uin' => $data['wxuin']
+            ],
+            'ChatRoomName'=>$groupname
+        ];
+        $queue = new RequestHandel($url);
+        $res = $queue->request($post, 'POST', $data['cookie'], 1);
+        if($res['body']['BaseResponse']['Ret'] != 0){
+            // 回复拉群失败消息
+            $resArr['content'] = '拉群失败';
             $resArr['res'] = $res;
             Redis::hset(config('rkey.errorMsg.key'),date('Y-m-d H:i:s'),json_encode($resArr));
         }else{

@@ -213,6 +213,8 @@ class WxGetItem
             $resArr['msg'] = '请求串错误';
             return $resArr;
         }
+        //插入群消息
+
         $resArr['code'] = 0;
         $resArr['msg'] = '群消息载入成功';
         $resArr['item'] = $res;
