@@ -73,7 +73,7 @@ class WxMessage
                     if($gRes['code'] == 0){  //载入群消息成功
                         self::sendMsg($value['FromUserName'],$gRes['item']['ContactList'][0]['NickName']);
                     }else{
-                        self::sendMsg($value['FromUserName'],json_encode($gRes));
+                        self::sendMsg($value['FromUserName'],$gRes['msg']);
                     }
                 }else{  //没有好友信息
                     exit();
