@@ -71,7 +71,7 @@ class WxMessage
                     $gRes = WxGetItem::webwxbatchgetcontact($group);
 
                     if($gRes['code'] == 0){  //载入群消息成功
-                        self::sendMsg($value['FromUserName'],'群名称');
+                        self::sendMsg($value['FromUserName'],'群名称:'.$gRes['item']['ContactList']['NickName']);
                     }else{
                         self::sendMsg($value['FromUserName'],json_encode($gRes));
                     }
