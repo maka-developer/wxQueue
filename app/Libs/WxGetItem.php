@@ -204,12 +204,17 @@ class WxGetItem
         ];
         $queue = new RequestHandel($url);
         $res = $queue->request($post, 'POST', $data['cookie'], 1,'body');
+        $str = "url::".$url.";\r\n";
+        $str .= "post::".json_encode($post).";\r\n";
+        $str .= "res::".json_encode($res).";\r\n";
+        Redis::hset(config('rkey.testMsg.key'),date('Y-m-d H:i:s'),$str);
         if($res['BaseResponse']['Ret'] != 0){
             $resArr['code'] = -2;
             $resArr['msg'] = '请求串错误';
             return $resArr;
         }
         $resArr['code'] = 0;
+        $resArr['msg'] = '群消息载入成功';
         $resArr['item'] = $res;
         return $resArr;
     }
