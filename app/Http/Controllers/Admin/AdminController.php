@@ -49,21 +49,18 @@ class AdminController extends Controller
         $errMsgs = Redis::hGetAll(config('rkey.errorMsg.key'));
         $queue = Redis::zRevRange('queues:default:reserved', 0, -1);
         $data = Redis::hGetAll(config('rkey.data.key'));
-        $log = Redis::hGetAll(config('rkey.log.key'));
         $msg = Redis::hGetAll(config('rkey.msgs.key'));
-        foreach($log as $key=>$value){
-            $arr['log'][$key] = json_decode($value,true);
-        }
+        $users = Redis::smembers(config('rkey.users.key'));
         foreach($msg as $key=>$value){
             $arr['msgs'][$key] = json_decode($value,true);
         }
-
         $arr['url'] = 'https://login.weixin.qq.com/qrcode/'.$uuid;
         $arr['code'] = $code;
         $arr['msg'] = $testMsgs;
         $arr['queue'] = $queue;
         $arr['err'] = $errMsgs;
         $arr['data'] = $data;
+        $arr['users'] = $users;
         dd($arr);
     }
 
@@ -75,18 +72,10 @@ class AdminController extends Controller
 //            echo '请传入接收人';
 //        }
 //        WxMessage::sendMsg($tu,urlencode($content));
-//        $time = $request->input('time','2017-06-22 09:53:46');
-//        $msgs = Redis::hget(config('rkey.msgs.key'),$time);
-//        $msgs = json_decode($msgs,true);
-//        $item = WxMessage::putMessage($msgs['body']['AddMsgList']);
-//        dd($item);
-        $arr = [1,2,3,4,5];
-        $pipe = Redis::pipeline();
-        foreach($arr as $value) {
-            $pipe->sAdd('wx::ceshi', $value);
-        }
-        Redis::exec();
-        $item = Redis::sMembers('wx::ceshi');
+        $time = $request->input('time','2017-06-22 09:53:46');
+        $msgs = Redis::hget(config('rkey.msgs.key'),$time);
+        $msgs = json_decode($msgs,true);
+        $item = WxMessage::putMessage($msgs['body']['AddMsgList']);
         dd($item);
     }
 }

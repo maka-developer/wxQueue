@@ -24,12 +24,6 @@ return [
         'ins'=>'全局code动态'
     ],
 
-    'log'=>[
-        'key'=>'wx::log',
-        'type'=>'hash',
-        'ins'=>'日志'
-    ],
-
     'msgs'=>[
         'key'=>'wx::msg',
         'type'=>'hash',
@@ -46,5 +40,11 @@ return [
         'key'=>'wx::errorMsg',
         'type'=>'散列',
         'ins'=>'保存错误信息'
+    ],
+
+    'users'=>[
+        'key'=>'wx::users',
+        'type'=>'集合',
+        'ins'=>'保存用户好友信息'
     ]
 ];

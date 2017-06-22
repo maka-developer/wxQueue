@@ -9,14 +9,18 @@
 namespace App\Libs;
 
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Redis;
 
 class WxDbUserItem
 {
     static public function saveUsers($users)
     {
         $dbArr = [];
+        $pipe = Redis::pipeline();
         if(!empty($users['MemberList'])){
             foreach($users['MemberList'] as $key=>$value){
+                $data[] = $value['UserName'];
+                $pipe->sadd(config('rkey.users.key'),$value['UserName']);
                 $dbArr[] = [
                     'uin'=>$value['Uin'],
                     'UserName'=>$value['UserName'],
@@ -32,10 +36,13 @@ class WxDbUserItem
                     'City'=>$value['City'],
                 ];
             }
+            Redis::exec();
         }else{
             return false;
         }
         DB::table('users')->insert($dbArr);
         return true;
     }
+
+
 }
