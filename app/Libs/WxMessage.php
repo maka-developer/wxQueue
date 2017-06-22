@@ -55,7 +55,9 @@ class WxMessage
         }
         $res = [];
         foreach($AddMsgList as $key=>$value){
-
+            if($value['Content'] == ''){
+                continue;
+            }
             $from = $value['FromUserName'];
             $users = UsersModel::where('UserName',$from)->first();
             $res[] = $users;
