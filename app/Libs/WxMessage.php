@@ -63,11 +63,17 @@ class WxMessage
             if($users[0] == null){  //没有好友信息
                 //判断是否群组
                 if(strstr($value['FromUserName'],'@@')){
+                    self::sendMsg($value['FromUserName'],'未知群，初始化中...');
                     $group['Count'] = 1;
                     $group['List'] = [
                         0=>['UserName'=>$value['FromUserName'], 'EncryChatRoomId'=>""]
                     ];
-                    WxGetItem::webwxbatchgetcontact($group);
+                    $res = WxGetItem::webwxbatchgetcontact($group);
+                    if($res['code'] == 0){  //载入群消息成功
+                        self::sendMsg($value['FromUserName'],'群信息载入成功，正在载入群成员....');
+                    }else{
+                        self::sendMsg($value['FromUserName'],'群信息载入失败，失败原因：'.$res['msg']);
+                    }
                 }else{  //没有好友信息
                     exit();
                 }

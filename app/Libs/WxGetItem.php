@@ -185,7 +185,9 @@ class WxGetItem
     static public function webwxbatchgetcontact($group = [])
     {
         if(empty($group)){
-            return false;
+            $resArr['code'] = -1;
+            $resArr['msg'] = '参数错误';
+            return $resArr;
         }
         $deviceId = 'e'.time().rand(10000,99999);
         $data = Redis::hgetall(config('rkey.data.key'));
@@ -202,10 +204,13 @@ class WxGetItem
         ];
         $queue = new RequestHandel($url);
         $res = $queue->request($post, 'POST', $data['cookie'], 1,'body');
-        $str = "url::".$url.";\r\n";
-        $str .= "post::".json_encode($post).";\r\n";
-        $str .= "res::".json_encode($res).";\r\n";
-        Redis::hset(config('rkey.testMsg.key'),date('Y-m-d H:i:s'),$str);
-        return true;
+        if($res['BaseResponse']['Ret'] != 0){
+            $resArr['code'] = -2;
+            $resArr['msg'] = '请求串错误';
+            return $resArr;
+        }
+        $resArr['code'] = 0;
+        $resArr['item'] = $res;
+        return $resArr;
     }
 }
