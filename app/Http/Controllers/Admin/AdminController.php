@@ -75,10 +75,14 @@ class AdminController extends Controller
 //            echo '请传入接收人';
 //        }
 //        WxMessage::sendMsg($tu,urlencode($content));
-        $time = $request->input('time','2017-06-22 09:53:46');
-        $msgs = Redis::hget(config('rkey.msgs.key'),$time);
-        $msgs = json_decode($msgs,true);
-        $item = WxMessage::putMessage($msgs['body']['AddMsgList']);
+//        $time = $request->input('time','2017-06-22 09:53:46');
+//        $msgs = Redis::hget(config('rkey.msgs.key'),$time);
+//        $msgs = json_decode($msgs,true);
+//        $item = WxMessage::putMessage($msgs['body']['AddMsgList']);
+//        dd($item);
+        $arr = [1,2,3,4,5];
+        Redis::sadd('wx::ceshi',$arr);
+        $item = Redis::sMembers('wx::ceshi');
         dd($item);
     }
 }
