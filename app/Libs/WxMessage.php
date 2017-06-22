@@ -37,11 +37,11 @@ class WxMessage
             Redis::set(config('rkey.code.key'), 1101);
         }else{
             Redis::hset(config('rkey.msgs.key'),date('Y-m-d H:i:s'),json_encode($res));
-//            self::putMessage($res['body']['AddMsgList']);
             //1、更新synckey
             unset($data);
             $data['syncKey'] = json_encode($res['body']['SyncKey']);
             Redis::hmset(config('rkey.data.key'),$data);    //保存参数
+            self::putMessage($res['body']['AddMsgList']);
         }
         exit();
     }
@@ -51,7 +51,7 @@ class WxMessage
     static public function putMessage($AddMsgList)
     {
         if(!$AddMsgList){
-            return false;
+            exit();
         }
         $res = [];
         foreach($AddMsgList as $key=>$value){
@@ -60,6 +60,19 @@ class WxMessage
             }
             $from = $value['FromUserName'];
             $users = UsersModel::where('UserName',$from)->first();
+            if($users[0] == null){  //没有好友信息
+                //判断是否群组
+                if(strstr($value['FromUserName'],'@@')){
+                    $group['Count'] = 1;
+                    $group['List'] = [
+                        0=>['UserName'=>$value['FromUserName'], 'EncryChatRoomId'=>""]
+                    ];
+                    WxGetItem::webwxbatchgetcontact($group);
+                }else{  //没有好友信息
+                    exit();
+                }
+
+            }
             $res[] = $users;
         }
         return $res;

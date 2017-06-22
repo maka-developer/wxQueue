@@ -182,8 +182,30 @@ class WxGetItem
     * 获取群组信息
     * 一次最多获取50条
     */
-    public function webwxbatchgetcontact()
+    static public function webwxbatchgetcontact($group = [])
     {
-
+        if(empty($group)){
+            return false;
+        }
+        $deviceId = 'e'.time().rand(10000,99999);
+        $data = Redis::hgetall(config('rkey.data.key'));
+        $url = "https://".$data['host']."/cgi-bin/mmwebwx-bin/webwxbatchgetcontact?type=ex&pass_ticket=".$data['pass_ticket'];
+        $post = [
+            'BaseRequest' => [
+                'DeviceID' => $deviceId,
+                'Sid' => $data['wxsid'],
+                'Skey' => $data['skey'],
+                'Uin' => $data['wxuin']
+            ],
+            'Count'=>$group['Count'],
+            'List'=>$group['List']
+        ];
+        $queue = new RequestHandel($url);
+        $res = $queue->request($post, 'POST', $data['cookie'], 1,'body');
+        $str = "url::".$url.";\r\n";
+        $str .= "post::".json_encode($post).";\r\n";
+        $str .= "res::".json_encode($res).";\r\n";
+        Redis::hset(config('rkey.testMsg.key'),date('Y-m-d H:i:s'),$str);
+        return true;
     }
 }
