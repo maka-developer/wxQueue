@@ -81,7 +81,11 @@ class AdminController extends Controller
 //        $item = WxMessage::putMessage($msgs['body']['AddMsgList']);
 //        dd($item);
         $arr = [1,2,3,4,5];
-        Redis::sadd('wx::ceshi',$arr);
+        $pipe = Redis::pipeline();
+        foreach($arr as $value) {
+            $pipe->sAdd('wx::ceshi', $value);
+        }
+        Redis::exec();
         $item = Redis::sMembers('wx::ceshi');
         dd($item);
     }
