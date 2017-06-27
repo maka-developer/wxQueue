@@ -71,6 +71,7 @@ class WxMessage
                         $group['UserName'] = $value['FromUserName'];
                         $group['instructions'] = $content;
                         $group->save();
+                        self::sendMsg($value['FromUserName'], '命令设置成功');
                     } else {
                         self::sendMsg($value['FromUserName'], '命令已经设置，无需重复设置');
                         exit();
