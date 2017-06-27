@@ -66,13 +66,11 @@ class WxMessage
                 if($group == null) {  //未设置命令
                     if ($str = strstr($value['Content'], 'set:')) {
                         $content = explode(':', $str);
-                        dd($content);
-                        exit();
-//                        $content = $content[1];         //指令
-//                        $group = new GroupModel();
-//                        $group['UserName'] = $value['FromUserName'];
-//                        $group['instructions'] = $content;
-//                        $group->save();
+                        $content = $content[1];         //指令
+                        $group = new GroupModel();
+                        $group['UserName'] = $value['FromUserName'];
+                        $group['instructions'] = $content;
+                        $group->save();
                     } else {
                         exit();
                     }
