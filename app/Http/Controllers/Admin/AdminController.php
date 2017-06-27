@@ -79,6 +79,7 @@ class AdminController extends Controller
 //        dd($item);
         $content = Redis::hget(config('rkey.msgs.key'),'2017-06-27 15:15:20');
         $content = json_decode($content, true);
+        WxMessage::putMessage($content['body']);
         dd($content);
     }
 }
