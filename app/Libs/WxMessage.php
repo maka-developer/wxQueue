@@ -63,8 +63,8 @@ class WxMessage
             if(strstr($value['FromUserName'],'@@')){    //群组，判断有无指令  set:
                 //首先判断是否设置指令
                 $group = GroupModel::where('UserName',$from)->first();
-                if($group == null) {  //未设置命令
-                    if ($str = strstr($value['Content'], 'set:')) {
+                if ($str = strstr($value['Content'], 'set:')) {
+                    if($group == null) {  //未设置命令
                         $content = explode(':', $str);
                         $content = $content[1];         //指令
                         $group = new GroupModel();
