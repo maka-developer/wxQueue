@@ -70,7 +70,9 @@ class WxMessage
                         $group = new GroupModel();
                         $group['UserName'] = $value['FromUserName'];
                         $group['instructions'] = $content;
-                        $group->save();
+                        dd($group);
+                        exit();
+//                        $group->save();
                     } else {
                         exit();
                     }
