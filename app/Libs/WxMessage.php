@@ -72,10 +72,10 @@ class WxMessage
                         $group['instructions'] = $content;
                         $group->save();
                     } else {
+                        self::sendMsg($value['FromUserName'], '命令已经设置，无需重复设置');
                         exit();
                     }
                 }else{
-                    self::sendMsg($value['FromUserName'], '命令已经设置，无需重复设置');
                     exit();
                 }
             }else{  //非群组，判断是否命令
