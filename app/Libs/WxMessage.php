@@ -80,7 +80,12 @@ class WxMessage
                 }
             }else{  //非群组，判断是否命令
                 $content = $value['Content'];
-                dd($content);
+                $group = GroupModel::where('instructions',$content)->first();
+                if(!empty($group)){
+                    $UserName = $group[0]['UserName'];
+                    echo $UserName;
+                }
+                echo 'mm';
                 exit();
                 self::sendMsg($value['FromUserName'],$content);
                 exit();
