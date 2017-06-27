@@ -42,7 +42,7 @@ class WxMessage
             unset($data);
             $data['syncKey'] = json_encode($res['body']['SyncKey']);
             Redis::hmset(config('rkey.data.key'),$data);    //保存参数
-//            self::putMessage($res['body']['AddMsgList']);
+            self::putMessage($res['body']);
         }
         exit();
     }
