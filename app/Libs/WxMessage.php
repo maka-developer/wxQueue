@@ -65,7 +65,7 @@ class WxMessage
                 $group = GroupModel::where('UserName',$from)->first();
                 if($group == null) {  //未设置命令
                     if ($str = strstr($value['Content'], 'set:')) {
-                        $content = explode($str, ':');
+                        $content = explode(':', $str);
                         dd($content);
                         exit();
 //                        $content = $content[1];         //指令
