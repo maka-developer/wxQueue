@@ -54,6 +54,8 @@ class WxMessage
         if(!$body['AddMsgList']){
             exit();
         }
+        echo 1;
+        exit();
         foreach($body['AddMsgList'] as $key=>$value){
             if($value['Content'] == ''){
                 continue;
