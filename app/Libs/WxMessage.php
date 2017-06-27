@@ -64,14 +64,14 @@ class WxMessage
                 //首先判断是否设置指令
                 $group = GroupModel::where('UserName',$from)->first();
                 if($group == null) {  //未设置命令
+                    echo 3;
                     if ($str = strstr($value['Content'], 'set:')) {
-                        $content = explode($str, ':');
-                        $content = $content[1];         //指令
-                        $group = new GroupModel();
-                        $group['UserName'] = $value['FromUserName'];
-                        $group['instructions'] = $content;
-                        dd($group);
-                        exit();
+                        echo 4;
+//                        $content = explode($str, ':');
+//                        $content = $content[1];         //指令
+//                        $group = new GroupModel();
+//                        $group['UserName'] = $value['FromUserName'];
+//                        $group['instructions'] = $content;
 //                        $group->save();
                     } else {
                         exit();
