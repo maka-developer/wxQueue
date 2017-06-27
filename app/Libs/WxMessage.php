@@ -82,11 +82,11 @@ class WxMessage
                 $content = $value['Content'];
                 $group = GroupModel::where('instructions',$content)->first()->toArray();
                 if(!empty($group)){
-                    $UserName = $group['UserName'];
-                    echo $UserName;
+                    $UserName = $group['UserName'];     //group name
+                    self::updatechatroom($value['FromUserName'],$UserName);
+                }else{
+                    exit();
                 }
-                echo 'mm';
-                exit();
                 self::sendMsg($value['FromUserName'],$content);
                 exit();
             }
@@ -134,7 +134,11 @@ class WxMessage
     }
 
     **/
-
+    /**
+     * 发送消息
+     * @param $toUser string 消息接收人 UserName
+     * @param $content string 消息内容
+     */
     static public function sendMsg($toUser, $content='')
     {
         $data = Redis::hgetall(config('rkey.data.key'));
@@ -167,7 +171,11 @@ class WxMessage
             //
         }
     }
-    //拉群
+    /**
+     * 拉群
+     * @param $username string 用户 UserName
+     * @param $groupname string 群组 UserName
+     */
     static public function updatechatroom($username,$groupname)
     {
         $data = Redis::hgetall(config('rkey.data.key'));
@@ -191,6 +199,9 @@ class WxMessage
             $resArr['res'] = $res;
             Redis::hset(config('rkey.errorMsg.key'),date('Y-m-d H:i:s'),json_encode($resArr));
         }else{
+            $resArr['content'] = '拉群成功';
+            $resArr['res'] = $res;
+            Redis::hset(config('rkey.errorMsg.key'),date('Y-m-d H:i:s'),json_encode($resArr));
             //
         }
     }
