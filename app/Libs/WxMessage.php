@@ -63,23 +63,21 @@ class WxMessage
             if(strstr($value['FromUserName'],'@@')){    //群组，判断有无指令  set:
                 //首先判断是否设置指令
                 $group = GroupModel::where('UserName',$from)->first();
-                dd($group);
-                exit();
-//                if($group[0] == null) {  //未设置命令
-//                    if ($str = strstr($value['Content'], 'set:')) {
-//                        $content = explode($str, ':');
-//                        $content = $content[1];         //指令
-//                        $group = new GroupModel();
-//                        $group['UserName'] = $value['FromUserName'];
-//                        $group['instructions'] = $content;
-//                        $group->save();
-//                    } else {
-//                        exit();
-//                    }
-//                }else{
-//                    self::sendMsg($value['FromUserName'], '命令已经设置，无需重复设置');
-//                    exit();
-//                }
+                if($group == null) {  //未设置命令
+                    if ($str = strstr($value['Content'], 'set:')) {
+                        $content = explode($str, ':');
+                        $content = $content[1];         //指令
+                        $group = new GroupModel();
+                        $group['UserName'] = $value['FromUserName'];
+                        $group['instructions'] = $content;
+                        $group->save();
+                    } else {
+                        exit();
+                    }
+                }else{
+                    self::sendMsg($value['FromUserName'], '命令已经设置，无需重复设置');
+                    exit();
+                }
             }else{  //没有好友信息
                 exit();
             }
