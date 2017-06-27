@@ -77,7 +77,7 @@ class AdminController extends Controller
 //        $msgs = json_decode($msgs,true);
 //        $item = WxMessage::putMessage($msgs['body']['AddMsgList']);
 //        dd($item);
-        $content = Redis::hget(config('rkey.msgs.key'),'2017-06-27 15:15:20');
+        $content = Redis::hget(config('rkey.msgs.key'),'2017-06-27 15:36:25');
         $content = json_decode($content, true);
         WxMessage::putMessage($content['body']);
         dd($content);

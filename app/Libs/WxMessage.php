@@ -82,6 +82,8 @@ class WxMessage
                 $content = $value['Content'];
                 $content = explode("<br/>", $content);
                 $content = $content[1];
+                dd($content);
+                exit();
                 self::sendMsg($value['FromUserName'],$content);
                 exit();
             }
