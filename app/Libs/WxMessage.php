@@ -199,9 +199,6 @@ class WxMessage
             $resArr['res'] = $res;
             Redis::hset(config('rkey.errorMsg.key'),date('Y-m-d H:i:s'),json_encode($resArr));
         }else{
-            $resArr['content'] = '拉群成功';
-            $resArr['res'] = $res;
-            Redis::hset(config('rkey.errorMsg.key'),date('Y-m-d H:i:s'),json_encode($resArr));
             //
         }
     }
