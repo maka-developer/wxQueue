@@ -80,7 +80,7 @@ class WxMessage
                 }
             }else{  //非群组，判断是否命令
                 $content = $value['Content'];
-                $content = explode("<br/>", $content);
+                $content = explode('<br/>', $content);
 //                $content = $content[1];
                 dd($content);
                 exit();
