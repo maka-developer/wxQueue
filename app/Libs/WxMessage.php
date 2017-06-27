@@ -78,7 +78,11 @@ class WxMessage
                     self::sendMsg($value['FromUserName'], '命令已经设置，无需重复设置');
                     exit();
                 }
-            }else{  //没有好友信息
+            }else{  //非群组，判断是否命令
+                $content = $value['Content'];
+                $content = explode("<br/>", $content);
+                $content = $content[1];
+                self::sendMsg($value['FromUserName'],$content);
                 exit();
             }
         }
