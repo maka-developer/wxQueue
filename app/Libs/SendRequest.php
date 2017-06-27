@@ -105,7 +105,7 @@ class SendRequest
                 Redis::set(config('rkey.code.key'), 1101);
             }
         }else{                                    //正常返回，查看是否有新消息 （或进入/离开聊天界面？）
-            if(strstr($res, 'selector:"2"')){   //新消息
+            if(strstr($res, 'selector:"2"') || strstr($res, 'selector:"4"') || strstr($res, 'selector:"6"')){   //新消息
                 WxMessage::getMessage();
             }
             exit();
