@@ -6,6 +6,7 @@
  */
 namespace App\Libs;
 
+use App\Model\GroupModel;
 use App\Model\UsersModel;
 use Illuminate\Support\Facades\Redis;
 use App\Libs\GetParams;
@@ -46,15 +47,53 @@ class WxMessage
         exit();
     }
     /*
-     * 处理消息
+     *  消息处理 拉群
      */
-    static public function putMessage($AddMsgList)
+    static public function putMessage($body)
     {
-        if(!$AddMsgList){
+        if(!$body['AddMsgList']){
+            exit();
+        }
+        foreach($body['AddMsgList'] as $key=>$value){
+            if($value['Content'] == ''){
+                continue;
+            }
+            $from = $value['FromUserName'];     //来源
+                //判断是否群组
+            if(strstr($value['FromUserName'],'@@')){    //群组，判断有无指令  set:
+                //首先判断是否设置指令
+                $group = GroupModel::where('UserName',$from)->first();
+                if($group[0] == null) {  //未设置命令
+                    if ($str = strstr($value['Content'], 'set:')) {
+                        $content = explode($str, ':');
+                        $content = $content[1];         //指令
+                        $group = new GroupModel();
+                        $group['UserName'] = $value['FromUserName'];
+                        $group['instructions'] = $content;
+                        $group->save();
+                    } else {
+                        exit();
+                    }
+                }else{
+                    self::sendMsg($value['FromUserName'], '命令已经设置，无需重复设置');
+                    exit();
+                }
+            }else{  //没有好友信息
+                exit();
+            }
+        }
+    }
+
+    /*
+     * 处理消息 判断用户是否存在
+     *
+    static public function putMessage($body)
+    {
+        if(!$body['AddMsgList']){
             exit();
         }
         $res = [];
-        foreach($AddMsgList as $key=>$value){
+        foreach($body['AddMsgList'] as $key=>$value){
             if($value['Content'] == ''){
                 continue;
             }
@@ -75,6 +114,8 @@ class WxMessage
                         self::sendMsg($value['FromUserName'],$gRes['msg']);
                     }
                 }else{  //没有好友信息
+                    //查看ModContactList是否存在（新增好友）
+
                     exit();
                 }
             }
@@ -82,6 +123,8 @@ class WxMessage
         }
         return $res;
     }
+
+    **/
 
     static public function sendMsg($toUser, $content='')
     {
