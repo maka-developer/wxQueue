@@ -81,8 +81,6 @@ class WxMessage
             }else{  //非群组，判断是否命令
                 $content = $value['Content'];
                 $group = GroupModel::where('instructions',$content)->first()->toArray();
-                dd($group);
-                exit();
                 if(!empty($group)){
                     $UserName = $group[0]['UserName'];
                     echo $UserName;
