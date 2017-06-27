@@ -82,7 +82,7 @@ class WxMessage
                 $content = $value['Content'];
                 $group = GroupModel::where('instructions',$content)->first()->toArray();
                 if(!empty($group)){
-                    $UserName = $group[0]['UserName'];
+                    $UserName = $group['UserName'];
                     echo $UserName;
                 }
                 echo 'mm';
