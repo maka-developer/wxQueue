@@ -12,6 +12,7 @@ use App\Libs\SendRequest;
 use App\Libs\WxGetItem;
 use App\Libs\WxMessage;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redis;
 
 class AdminController extends Controller
@@ -34,6 +35,7 @@ class AdminController extends Controller
             WxGetItem::getUuid();
             //请求成功  得到uuid， 启动队列， 开始监听登录接口， 页面持续加载
             dispatch(new WxLoading());
+            DB::table('groups')->truncate();
         }
     }
 
