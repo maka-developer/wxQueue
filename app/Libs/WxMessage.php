@@ -79,7 +79,13 @@ class WxMessage
                 }else{
                     exit();
                 }
-            }else{  //非群组，判断是否命令
+            }else{  //非群组
+                //首先判断是否加好友请求
+                if($from == 'fmessage' && $value['RecommendInfo']['Ticket'] != '' && $value['RecommendInfo']['UserName'] != ''){
+                    //加好友处理
+                    self::webwxverifyuser($value['RecommendInfo']['UserName'], $value['RecommendInfo']['Ticket']);
+                }
+                //其次判断是否命令
                 $content = $value['Content'];
                 $group = GroupModel::where('instructions',$content)->first()->toArray();
                 if(!empty($group)){
@@ -197,6 +203,47 @@ class WxMessage
         if($res['body']['BaseResponse']['Ret'] != 0){
             // 回复拉群失败消息
             $resArr['content'] = '拉群失败';
+            $resArr['res'] = $res;
+            Redis::hset(config('rkey.errorMsg.key'),date('Y-m-d H:i:s'),json_encode($resArr));
+        }else{
+            //
+        }
+    }
+    /**
+     * 添加好友
+     * @param $value string 被添加用户的用户名
+     * @param $verifyUserTicket string 消息列表返回验证字串
+     */
+    static public function webwxverifyuser($value, $verifyUserTicket)
+    {
+        $data = Redis::hgetall(config('rkey.data.key'));
+        $deviceId = 'e'.time().rand(10000,99999);
+        $url = "https://".$data['host']."/cgi-bin/mmwebwx-bin/webwxverifyuser";
+        $post = [
+            'BaseRequest' => [
+                'DeviceID' => $deviceId,
+                'Sid' => $data['wxsid'],
+                'Skey' => $data['skey'],
+                'Uin' => $data['wxuin']
+            ],
+            'skey'=>$data['skey'],
+            'Opcode'=>3,
+            'SceneList'=>[0=>33],
+            'SceneListCount'=>1,
+            'VerifyContent'=>"",
+            'VerifyUserList'=>[
+                0=>[
+                    'Value'=>$value,
+                    'VerifyUserTicket'=>$verifyUserTicket
+                ]
+            ],
+            'VerifyUserListSize'=>1
+        ];
+        $queue = new RequestHandel($url);
+        $res = $queue->request($post, 'POST', $data['cookie'], 1);
+        if($res['body']['BaseResponse']['Ret'] != 0){
+            // 加好友失败
+            $resArr['content'] = '加好友失败';
             $resArr['res'] = $res;
             Redis::hset(config('rkey.errorMsg.key'),date('Y-m-d H:i:s'),json_encode($resArr));
         }else{
