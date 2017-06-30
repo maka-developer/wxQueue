@@ -27,12 +27,14 @@ class AdminController extends Controller
      *  1、获取uuid
      *  2、开启登录监听队列
      */
-    public function index()
+    public function index(Request $request)
     {
-
-        WxGetItem::getUuid();
-        //请求成功  得到uuid， 启动队列， 开始监听登录接口， 页面持续加载
-        dispatch(new WxLoading());
+        $act = $request->input('act');
+        if($act == 'bgwx'){
+            WxGetItem::getUuid();
+            //请求成功  得到uuid， 启动队列， 开始监听登录接口， 页面持续加载
+            dispatch(new WxLoading());
+        }
     }
 
     public function getdata(Request $request)
