@@ -84,6 +84,7 @@ class WxMessage
                 if($from == 'fmessage' && $value['RecommendInfo']['Ticket'] != '' && $value['RecommendInfo']['UserName'] != ''){
                     //加好友处理
                     self::webwxverifyuser($value['RecommendInfo']['UserName'], $value['RecommendInfo']['Ticket']);
+                    exit();
                 }
                 //其次判断是否命令
                 $content = $value['Content'];
