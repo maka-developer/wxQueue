@@ -34,6 +34,8 @@ class WxMessage
         $queue = new RequestHandel($url);
         $res = $queue->request($post, 'POST', $data['cookie'], 1);
         if($res['body']['BaseResponse']['Ret'] != 0){
+            $resArr['content'] = '消息拉取失败';
+            $resArr['res'] = $res;
             Redis::hset(config('rkey.errorMsg.key'),date('Y-m-d H:i:s'),json_encode($res));
             Redis::set(config('rkey.code.key'), 1101);
         }else{
