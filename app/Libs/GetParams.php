@@ -136,7 +136,10 @@ class GetParams
         }
 
         //运算
-        $add = substr($num, 0, -$add_length) . (string)((int)substr($num, -$add_length) + $addNum);
+        $header = substr($num, 0, -$add_length);
+        $footer = (int)substr($num, -$add_length);
+        $footer += $addNum;
+        $add = $header . $footer;
         return $add;
     }
 }
