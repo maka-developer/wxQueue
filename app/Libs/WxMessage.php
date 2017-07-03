@@ -36,7 +36,9 @@ class WxMessage
         if($res['body']['BaseResponse']['Ret'] != 0){
             $resArr['content'] = '消息拉取失败';
             $resArr['res'] = $res;
-            Redis::hset(config('rkey.errorMsg.key'),date('Y-m-d H:i:s'),json_encode($res));
+            $resArr['url'] = $url;
+            $resArr['post'] = $post;
+            Redis::hset(config('rkey.errorMsg.key'),date('Y-m-d H:i:s'),json_encode($resArr));
             Redis::set(config('rkey.code.key'), 1101);
         }else{
             Redis::hset(config('rkey.msgs.key'),date('Y-m-d H:i:s'),json_encode($res));
