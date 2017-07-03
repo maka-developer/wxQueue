@@ -255,4 +255,40 @@ class WxMessage
             //
         }
     }
+    /**
+     * 修改好友备注
+     * @param $UserName string 用户当前id
+     *
+     */
+    static public function webwxoplog($UserName, $RemarkName)
+    {
+        if($RemarkName == ''){
+            //生成
+
+        }
+        $data = Redis::hgetall(config('rkey.data.key'));
+        $deviceId = 'e'.time().rand(10000,99999);
+        $url = "https://" . $data['host'] ."/cgi-bin/mmwebwx-bin/webwxoplog";
+        $post = [
+            'BaseRequest' => [
+                'DeviceID' => $deviceId,
+                'Sid' => $data['wxsid'],
+                'Skey' => $data['skey'],
+                'Uin' => $data['wxuin']
+            ],
+            "CmdId" => 2,
+            "RemarkName" => $RemarkName,
+            "UserName" => $UserName
+        ];
+        $queue = new RequestHandel($url);
+        $res = $queue->request($post, 'POST', $data['cookie'], 1);
+        if($res['body']['BaseResponse']['Ret'] != 0){
+            // 加好友失败
+            $resArr['content'] = '修改备注失败';
+            $resArr['res'] = $res;
+            Redis::hset(config('rkey.errorMsg.key'),date('Y-m-d H:i:s'),json_encode($resArr));
+        }else{
+            //
+        }
+    }
 }
