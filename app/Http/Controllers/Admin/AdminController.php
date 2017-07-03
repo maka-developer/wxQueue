@@ -30,6 +30,32 @@ class AdminController extends Controller
      */
     public function index(Request $request)
     {
+        $token = $request->input('token','');
+        $tokArr = Redis::get(config('rkey.WxState.key'));
+        $tokArr = json_decode($tokArr, true);
+
+        if(is_array($tokArr)&&array_key_exists('time', $tokArr)){
+            $time = $tokArr['time'];
+            if((time() - $time) > 60){
+                $resArr['code'] = -1;
+                $resArr['msg'] = 'REQUEST ERROR';
+                return json_encode($resArr);
+            }
+            if($tokArr['token'] != $token){
+                $resArr['code'] = -3;
+                $resArr['msg'] = 'TOKEN ERROR';
+                return json_encode($resArr);
+            }
+        }else{
+            $resArr['code'] = -2;
+            $resArr['msg'] = 'TOKEN ERROR';
+            return json_encode($resArr);
+        }
+
+        $resArr['code'] = 0;
+        $resArr['url'] = 'https://';
+        return json_encode($resArr);
+
         $act = $request->input('act');
         if($act == 'bgwx'){
             WxGetItem::getUuid();

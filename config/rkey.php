@@ -6,6 +6,12 @@
 
 return [
 
+    'WxState'=>[
+        'key' => 'wx::state',
+        'type'=>'string',
+        'ins'=>''
+    ],
+
     'uuid'=>[
         'key'=>'wx::uuid',
         'type'=>'string',
