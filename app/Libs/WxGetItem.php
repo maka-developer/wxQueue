@@ -18,8 +18,9 @@ class WxGetItem
         $queue = new RequestHandel($url);
         $res = $queue->request(array(), 'GET', 0, 0, 'body');
         $uuid = substr($res, 50, 12);
-        Redis::set(config('rkey.uuid.key'), $uuid);
+        Redis::set(config('rkey.data.key'), 'uuid', $uuid);
         Redis::set(config('rkey.code.key'), 0);
+        return $uuid;
     }
 
     /*

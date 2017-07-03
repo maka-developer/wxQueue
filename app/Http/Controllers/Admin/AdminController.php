@@ -24,13 +24,16 @@ class AdminController extends Controller
         $this->TurnTime = time() . '000';
 
     }
-    /*
-     *  1、获取uuid
-     *  2、开启登录监听队列
+
+    /**
+     * 初始化微信操作
+     * @param Request $request
+     * @return string
      */
     public function index(Request $request)
     {
         $token = $request->input('token','');
+        $act = $request->input('act','');
         $tokArr = Redis::get(config('rkey.WxState.key'));
         $tokArr = json_decode($tokArr, true);
 
@@ -52,16 +55,29 @@ class AdminController extends Controller
             return json_encode($resArr);
         }
 
-        $resArr['code'] = 0;
-        $resArr['url'] = 'https://';
-        return json_encode($resArr);
-
-        $act = $request->input('act');
-        if($act == 'bgwx'){
-            WxGetItem::getUuid();
+        if($act == 'reload'){
+            $uuid = WxGetItem::getUuid();
             //请求成功  得到uuid， 启动队列， 开始监听登录接口， 页面持续加载
-            dispatch(new WxLoading());
+//            dispatch(new WxLoading());
             DB::table('groups')->truncate();
+            $resArr['code'] = 0;
+            $resArr['url'] = 'https://login.weixin.qq.com/qrcode/'.$uuid;
+            return json_encode($resArr);
+        }else{
+            $code = Redis::get(config('rkey.code.key'));
+            if($code == 0 || $code == 1101){    //停止状态
+                $uuid = WxGetItem::getUuid();
+                //请求成功  得到uuid， 启动队列， 开始监听登录接口， 页面持续加载
+//            dispatch(new WxLoading());
+                DB::table('groups')->truncate();
+                $resArr['code'] = 0;
+                $resArr['url'] = 'https://login.weixin.qq.com/qrcode/'.$uuid;
+                return json_encode($resArr);
+            }else{
+                $resArr['code'] = -4;
+                $resArr['msg'] = 'WORKED NOW';
+                return json_encode($resArr);
+            }
         }
     }
 
